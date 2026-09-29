@@ -2,7 +2,7 @@
 
 import { AnimatePresence, motion } from "motion/react";
 import { useEffect, useState } from "react";
-import { testimonials } from "@/content/site";
+import { site, testimonials, upworkRating } from "@/content/site";
 import { Arrow } from "../ui/Button";
 import { SectionLabel } from "../ui/bits";
 import { LineReveal, Reveal } from "../ui/Reveal";
@@ -50,7 +50,7 @@ export function Testimonials() {
       <div className="grid gap-12 lg:grid-cols-12">
         <div className="lg:col-span-4">
           <Reveal>
-            <SectionLabel>Kind words</SectionLabel>
+            <SectionLabel>Client reviews</SectionLabel>
           </Reveal>
           <LineReveal
             as="h2"
@@ -60,7 +60,25 @@ export function Testimonials() {
           <span id="testimonials-heading" className="sr-only">
             Testimonials
           </span>
-          <div className="mt-10 flex items-center gap-3">
+          <Reveal delay={0.1} className="mt-8">
+            <a
+              href={site.socials[0].href}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="group inline-flex items-center gap-4 rounded-2xl bg-ink px-5 py-4 text-white transition-colors duration-500 hover:bg-violet"
+            >
+              <span className="font-display text-[44px] leading-none text-lime">{upworkRating.score}</span>
+              <span>
+                <span className="flex gap-0.5 text-lime" aria-hidden>
+                  {"★★★★★"}
+                </span>
+                <span className="block text-sm font-bold">
+                  {upworkRating.count} reviews on Upwork <Arrow className="ml-1 inline h-3.5 w-3.5 -rotate-45 transition-transform group-hover:rotate-0" />
+                </span>
+              </span>
+            </a>
+          </Reveal>
+          <div className="mt-8 flex items-center gap-3">
             <button
               type="button"
               onClick={() => go(-1)}
@@ -112,17 +130,28 @@ export function Testimonials() {
               >
                 <div>
                   <Stars />
-                  <blockquote className="mt-8 text-[clamp(22px,2.6vw,36px)] font-bold leading-[1.3] tracking-[-0.01em] text-ink">
+                  <blockquote className="mt-8 text-[clamp(19px,1.9vw,28px)] font-bold leading-[1.4] tracking-[-0.01em] text-ink">
                     “{t.quote}”
                   </blockquote>
                 </div>
-                <figcaption className="flex items-center gap-4">
-                  <span className="grid h-14 w-14 place-items-center rounded-full bg-ink font-display text-2xl text-lime">
-                    {t.name.charAt(0)}
+                <figcaption className="flex flex-col gap-5 border-t border-ink/10 pt-6 sm:flex-row sm:items-center sm:justify-between">
+                  <span className="flex items-center gap-4">
+                    <span className="grid h-14 w-14 flex-none place-items-center rounded-full bg-ink text-lime" aria-hidden>
+                      <svg viewBox="0 0 24 24" className="h-6 w-6" fill="none" stroke="currentColor" strokeWidth="2.6" strokeLinecap="round" strokeLinejoin="round">
+                        <path d="m5 12 5 5 9-10" />
+                      </svg>
+                    </span>
+                    <span>
+                      <span className="block text-[17px] font-extrabold leading-snug text-ink">{t.project}</span>
+                      <span className="block text-sm font-semibold text-muted">Verified Upwork client · {t.date}</span>
+                    </span>
                   </span>
-                  <span>
-                    <span className="block text-lg font-extrabold text-ink">{t.name}</span>
-                    <span className="block text-muted">{t.role}</span>
+                  <span className="flex flex-wrap gap-1.5 sm:max-w-[45%] sm:justify-end">
+                    {t.tags.map((tag) => (
+                      <span key={tag} className="rounded-full bg-white px-3 py-1 text-xs font-bold text-purple">
+                        {tag}
+                      </span>
+                    ))}
                   </span>
                 </figcaption>
               </motion.figure>

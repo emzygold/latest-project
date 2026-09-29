@@ -333,28 +333,43 @@ export const stats = [
   { value: 100, suffix: "%", label: "Remote-ready, worldwide" },
 ];
 
-/**
- * PLACEHOLDER TESTIMONIALS: replace these with real client reviews
- * (for example, copy them from your Upwork feedback) before going live.
- */
+/** Verified 5.0★ client reviews from Upwork (quotes copied as written) */
+export const upworkRating = { score: "5.0", count: 5 };
+
 export const testimonials = [
   {
     quote:
-      "George took our booking process from scattered spreadsheets to a clean app with live availability. Communication was clear the whole way, and he delivered exactly what we scoped.",
-    name: "Daniel O.",
-    role: "Operations Lead, Mobility Startup",
+      "George has a deep understanding of Bubble.io, SaaS development, MVP development, no code application building, workflow optimization, and third party integrations. He communicated clearly, delivered milestones on schedule, and was proactive in solving challenges. If you're looking for a skilled Bubble.io developer who can turn ideas into high quality web applications, George is an easy recommendation. We look forward to working with him again.",
+    project: "Bubble.io Expert Needed to Build a Wensi Inspired Platform",
+    date: "Jul 2026",
+    tags: ["Bubble.io", "No-Code Development", "Solution Oriented"],
   },
   {
     quote:
-      "He understood our brand straight away. The reservation flow feels premium on the front end and just works behind the scenes: deposits, payments and confirmations.",
-    name: "Amara K.",
-    role: "Founder, Wellness Retreat",
+      "George delivered an outstanding Bubble.io application with excellent communication, attention to detail, and on time delivery. Everything worked perfectly, and the overall quality exceeded expectations. I highly recommend Georgie and would happily work with him again.",
+    project: "Bubble.io SaaS Web App Developer Needed",
+    date: "Jul 2026",
+    tags: ["Bubble.io", "SaaS Development", "Reliable"],
   },
   {
     quote:
-      "Fast, detail-oriented and genuinely easy to work with. George turned our Figma designs into a responsive Bubble site that loads quickly and converts.",
-    name: "Omar H.",
-    role: "Marketing Director, Real Estate Agency",
+      "I would absolutely work with George again. He was professional, responsive, and delivered a high quality Bubble.io application that exceeded my expectations. Everything was completed on time, communication was excellent, and the final product worked flawlessly. I highly recommend George to anyone looking for a reliable Bubble.io developer.",
+    project: "Bubble.io MVP & SaaS Web App",
+    date: "Jul 2026",
+    tags: ["Bubble.io", "SaaS", "Committed to Quality"],
+  },
+  {
+    quote:
+      "I had an excellent experience working with George. I ordered his Bubble.io web app development service, and he delivered exactly what I was hoping for and more.",
+    project: "Bubble.io Developer to Build and Scale a Web App",
+    date: "Feb 2026",
+    tags: ["Reliable", "Clear Communicator", "Detail Oriented"],
+  },
+  {
+    quote: "George communicates well, is flexible and always asks questions to make sure he's doing the job right.",
+    project: "Mobile App Developer for Travel App",
+    date: "Sep 2026",
+    tags: ["Bubble.io", "Mobile App Development", "Clear Communicator"],
   },
 ];
 

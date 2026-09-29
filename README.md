@@ -38,10 +38,9 @@ To add a project, drop its image in `public/images/` and add an entry to `projec
 
 ### Before going live
 
-1. **Testimonials are placeholders.** Replace them in `site.ts` with real client reviews (for example, from Upwork).
-2. **Check the experience dates and stats** in `site.ts`.
-3. **Set your domain** in `site.url` (used for SEO, the sitemap and social previews).
-4. **Contact form:** it sends through [FormSubmit](https://formsubmit.co) to `nexorahbuilds@gmail.com`. The first time someone submits, FormSubmit emails you an activation link, so click it once. If sending ever fails, the form offers an email/WhatsApp fallback.
+1. **Check the experience dates and stats** in `site.ts`.
+2. **Set your domain** in `site.url` (used for SEO, the sitemap and social previews).
+3. **Contact form:** it sends through [FormSubmit](https://formsubmit.co) to `nexorahbuilds@gmail.com`. The first time someone submits, FormSubmit emails you an activation link, so click it once. If sending ever fails, the form offers an email/WhatsApp fallback.
 
 ## Run locally
 
