@@ -47,12 +47,17 @@ To add a project, drop its image in `public/images/` and add an entry to `projec
 ```bash
 npm install
 npm run dev     # http://localhost:3000
-npm run build   # production build
-npm start       # serve the production build
+npm run build   # static export into the out/ folder
 ```
 
-## Deploy (free) on Vercel
+## Deploy
 
-1. Push this repo to GitHub.
-2. Go to [vercel.com/new](https://vercel.com/new) and import the repo. No settings are needed.
-3. Optional: add your own domain in the Vercel project settings, then update `site.url`.
+The site is a **static export**: `npm run build` creates an `out/` folder with plain HTML, CSS, JS and images. It works on any static host.
+
+**Netlify (drag and drop):** go to [app.netlify.com/drop](https://app.netlify.com/drop) and drop the `out` folder (or unzip `nexorah-site.zip` and drop the folder).
+
+**Netlify (from GitHub):** import the repo. `netlify.toml` already sets the build command and the `out` publish folder.
+
+**Vercel (from GitHub):** go to [vercel.com/new](https://vercel.com/new), import the repo and click Deploy. Vercel detects Next.js automatically.
+
+**Vercel (from the terminal):** run `npx vercel deploy out --prod`.
