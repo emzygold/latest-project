@@ -60,6 +60,7 @@
 }
 
 html {
+  overflow-x: clip;
   background: var(--color-paper);
   color: var(--color-ink);
   -webkit-text-size-adjust: 100%;

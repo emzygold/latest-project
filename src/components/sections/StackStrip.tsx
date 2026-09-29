@@ -125,7 +125,7 @@ function Logo({ l, i, show }: { l: (typeof logos)[number]; i: number; show: bool
   const id = useId().replace(/:/g, "");
   return (
     <motion.li
-      className="group flex flex-none items-center gap-3.5 px-6 lg:px-0"
+      className="group flex flex-none items-center gap-3.5 px-6 min-[1400px]:px-0"
       initial={{ opacity: 0, y: 24, filter: "blur(6px)" }}
       animate={show ? { opacity: 1, y: 0, filter: "blur(0px)" } : undefined}
       transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1], delay: 0.15 + i * 0.06 }}
@@ -176,7 +176,7 @@ export function StackStrip() {
         </div>
 
         {/* desktop: one row with dividers */}
-        <ul className="mt-9 hidden items-center justify-between lg:flex">
+        <ul className="mt-9 hidden items-center justify-between min-[1400px]:flex">
           {logos.map((l, i) => (
             <li key={l.name} className="contents">
               {i > 0 && (
@@ -197,7 +197,7 @@ export function StackStrip() {
       </div>
 
       {/* mobile / tablet: scrolling marquee */}
-      <div className="marquee-mask mt-8 lg:hidden">
+      <div className="marquee-mask mt-8 min-[1400px]:hidden">
         <VelocityMarquee baseVelocity={-1.2}>
           <ul className="flex items-center">
             {logos.map((l, i) => (

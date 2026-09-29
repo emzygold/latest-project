@@ -15,7 +15,7 @@ export function AboutIntro() {
   const rotate = useTransform(scrollYProgress, [0, 1], [-6, 6]);
 
   return (
-    <section className="container-x relative py-20 md:py-32" aria-labelledby="about-intro">
+    <section className="container-x relative overflow-x-clip py-20 md:py-32" aria-labelledby="about-intro">
       <div className="grid gap-14 lg:grid-cols-12 lg:gap-10">
         <div className="lg:col-span-8">
           <Reveal>
