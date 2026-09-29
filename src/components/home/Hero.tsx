@@ -116,13 +116,16 @@ export function Hero() {
       {/* soft background */}
       <div className="dot-grid pointer-events-none absolute inset-0 [mask-image:radial-gradient(ellipse_at_center,black_20%,transparent_70%)] opacity-60" />
 
-      <div className="container-x relative flex h-full flex-col pt-[calc(var(--nav-h)+28px)] lg:block lg:pt-0">
+      <div
+        className="container-x relative flex h-full flex-col pt-[calc(var(--nav-h)+28px)] lg:block lg:pt-0"
+        style={{ ["--P" as string]: "min(44vw, calc(88svh * 1.0667), 1030px)" }}
+      >
         {/* ---------- headline ---------- */}
         <motion.div
           style={{ y: textY, opacity: textOpacity }}
-          className="relative z-10 lg:absolute lg:left-[var(--gutter)] lg:top-1/2 lg:w-[36vw] lg:-translate-y-[58%] xl:w-[38vw]"
+          className="relative z-10 @container lg:absolute lg:bottom-[calc(0.42*var(--P)+12px)] lg:left-[var(--gutter)] lg:w-[calc(50%-var(--gutter)-28px-0.22*var(--P))]"
         >
-          <h1 className="font-display text-[clamp(44px,11.5vw,72px)] leading-[1.02] text-ink lg:text-[clamp(40px,4.35vw,96px)]">
+          <h1 className="font-display text-[clamp(44px,11.5vw,72px)] leading-[1.02] text-ink lg:text-[min(96px,12.4cqw)]">
             <span className="block overflow-hidden pb-[0.06em]">
               <motion.span
                 className="block"
@@ -187,9 +190,9 @@ export function Hero() {
         </motion.div>
 
         {/* ---------- portrait ---------- */}
-        <div className="relative mx-auto mt-8 aspect-[1024/960] w-full max-w-[560px] lg:absolute lg:bottom-0 lg:left-1/2 lg:mt-0 lg:h-[88%] lg:w-auto lg:max-w-[44vw] lg:-translate-x-1/2 xl:max-w-[46vw] 2xl:max-w-[52vw]">
+        <div className="relative mx-auto mt-8 aspect-[1024/960] w-full max-w-[560px] lg:absolute lg:bottom-0 lg:left-1/2 lg:mt-0 lg:w-[var(--P)] lg:max-w-none lg:-translate-x-1/2">
           <motion.div
-            className="absolute left-1/2 top-[8%] -z-0 aspect-square w-[78%] -translate-x-1/2 rounded-full bg-[radial-gradient(circle_at_30%_30%,#efe9ff,#e3d9ff_45%,rgba(108,62,252,0.12)_70%,transparent_72%)]"
+            className="absolute left-[56%] top-[3%] -z-0 aspect-square w-[56%] -translate-x-1/2 rounded-full bg-[radial-gradient(circle_at_35%_30%,#f3efff,#e6dcff_60%,#dccfff)]"
             style={{ x: blobX, y: blobY }}
             initial={{ scale: 0, opacity: 0 }}
             animate={ready ? { scale: 1, opacity: 1 } : undefined}
