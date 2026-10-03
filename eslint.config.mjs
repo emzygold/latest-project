@@ -12,6 +12,8 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // Separate Node app with its own package.json
+    "lead-outreach/**",
   ]),
 ]);
 

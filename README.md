@@ -61,3 +61,7 @@ The site is a **static export**: `npm run build` creates an `out/` folder with p
 **Vercel (from GitHub):** go to [vercel.com/new](https://vercel.com/new), import the repo and click Deploy. Vercel detects Next.js automatically.
 
 **Vercel (from the terminal):** run `npx vercel deploy out --prod`.
+
+## Lead Outreach tool
+
+`lead-outreach/` is a separate Node.js app that emails and WhatsApps leads from a CSV and reports the ones that can't be reached on WhatsApp. See [lead-outreach/README.md](lead-outreach/README.md).
