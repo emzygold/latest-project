@@ -1,0 +1,221 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Lead Outreach</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 32 32%22%3E%3Crect width=%2232%22 height=%2232%22 rx=%228%22 fill=%22%236c3efc%22/%3E%3Ctext x=%2216%22 y=%2221%22 font-family=%22Arial%22 font-size=%2213%22 font-weight=%22700%22 fill=%22white%22 text-anchor=%22middle%22%3ELO%3C/text%3E%3C/svg%3E" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="top">
+    <div class="brand"><span class="logo">LO</span> Lead Outreach</div>
+    <div id="providerStatus" class="providers"></div>
+  </header>
+
+  <nav class="steps" id="steps">
+    <button data-step="upload" class="active">1. Upload &amp; clean</button>
+    <button data-step="messages">2. Messages</button>
+    <button data-step="review">3. Review &amp; test</button>
+    <button data-step="send">4. Send</button>
+    <button data-step="jobs">Dashboard</button>
+    <button data-step="suppression">Do-not-contact list</button>
+  </nav>
+
+  <main>
+    <!-- 1. Upload -->
+    <section id="step-upload" class="step active">
+      <div class="card">
+        <h2>Upload your leads</h2>
+        <p class="muted">CSV with Name, Email, Phone Number and (optional) Socials. Header names can be in any case or style ("Phone", "phone_number", "Mobile"…). Your file is read in memory only and never changed.</p>
+        <form id="uploadForm" class="row">
+          <label class="grow">CSV file <input type="file" id="fileInput" accept=".csv,text/csv,text/plain" required /></label>
+          <label>Default country (for numbers without a country code)
+            <select id="countrySelect"></select>
+          </label>
+          <button class="primary" type="submit">Upload</button>
+        </form>
+        <div id="uploadError" class="error hidden"></div>
+      </div>
+
+      <div id="mappingCard" class="card hidden">
+        <h2>Check the column mapping</h2>
+        <p class="muted" id="fileInfo"></p>
+        <div id="mappingFields" class="grid4"></div>
+        <ul id="mappingWarnings" class="warnings"></ul>
+        <button class="primary" id="previewBtn">Clean &amp; preview</button>
+      </div>
+
+      <div id="previewCard" class="card hidden">
+        <div class="card-head">
+          <h2>Preview</h2>
+          <a id="preReportLink" class="button" href="#" download>Download WhatsApp report (before sending)</a>
+        </div>
+        <div id="summary" class="stats"></div>
+        <div class="filter-row">
+          <label><input type="checkbox" id="onlyIssues" /> Only show rows with issues</label>
+        </div>
+        <div class="table-wrap"><table id="previewTable"></table></div>
+        <div class="actions"><button class="primary" data-goto="messages">Next: write your messages →</button></div>
+      </div>
+    </section>
+
+    <!-- 2. Messages -->
+    <section id="step-messages" class="step">
+      <div class="card">
+        <h2>Merge fields</h2>
+        <p class="muted">Click a field to insert it where your cursor is. Empty values fall back gracefully:
+          <code>{{first_name}}</code> becomes "there", <code>{{socials|your page}}</code> uses your own fallback, and
+          <code>{{#socials}}…{{/socials}}</code> only shows when the lead has socials. Lines that would end up blank are removed.</p>
+        <div id="fieldChips" class="chips"></div>
+      </div>
+
+      <div class="card">
+        <div class="card-head"><h2>Email</h2><label class="switch"><input type="checkbox" id="emailEnabled" checked /> Send emails</label></div>
+        <label>Subject <input id="emailSubject" class="tpl" /></label>
+        <label>Body <textarea id="emailBody" rows="10" class="tpl"></textarea></label>
+        <p class="muted small">An unsubscribe line is always added to the bottom of every email automatically.</p>
+      </div>
+
+      <div class="card">
+        <div class="card-head"><h2>WhatsApp</h2><label class="switch"><input type="checkbox" id="waEnabled" checked /> Send WhatsApp</label></div>
+        <div class="segmented">
+          <label><input type="radio" name="waMode" value="template" checked /> Approved template (cold leads)</label>
+          <label><input type="radio" name="waMode" value="text" /> Free text (only within 24 h of their last message)</label>
+        </div>
+        <div id="waTemplateFields">
+          <div class="row">
+            <label class="grow">Template name (exactly as approved in Meta) <input id="waTemplateName" placeholder="e.g. lead_intro" /></label>
+            <label>Language code <input id="waTemplateLanguage" value="en" size="6" /></label>
+            <button type="button" id="checkTemplateBtn">Check template</button>
+          </div>
+          <div id="templateCheck" class="muted small"></div>
+          <label>Template parameters, one per line ({{1}}, {{2}}, … in order). Use merge fields:
+            <textarea id="waTemplateParams" rows="3" class="tpl"></textarea></label>
+          <label>Template text (paste the approved body, used for previews only)
+            <textarea id="waTemplateBody" rows="3"></textarea></label>
+        </div>
+        <div id="waTextFields" class="hidden">
+          <label>Message <textarea id="waText" rows="6" class="tpl"></textarea></label>
+          <p class="muted small">"Reply STOP to opt out." is added automatically if your message doesn't already say how to opt out.</p>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-head"><h2>AI variation (optional)</h2><label class="switch"><input type="checkbox" id="aiEnabled" /> Vary each message with AI</label></div>
+        <p class="muted small" id="aiInfo">Lightly rewords each email body (and free-text WhatsApp) per lead, using only that lead's own CSV data.
+          Any version that adds a link, number, handle or email that isn't in your message or the lead's data is rejected, and the original is used.</p>
+      </div>
+      <ul id="settingsProblems" class="warnings"></ul>
+      <div class="actions"><button class="primary" data-goto="review">Next: review &amp; test →</button></div>
+    </section>
+
+    <!-- 3. Review -->
+    <section id="step-review" class="step">
+      <div class="card">
+        <div class="card-head">
+          <h2>Rendered messages (dry run)</h2>
+          <div class="row">
+            <label class="switch"><input type="checkbox" id="previewAi" /> Include AI variation</label>
+            <button id="renderBtn" class="primary">Render first 5 leads</button>
+          </div>
+        </div>
+        <ul id="renderProblems" class="warnings"></ul>
+        <div id="renderOut" class="previews"></div>
+      </div>
+      <div class="card">
+        <h2>Send a test to yourself</h2>
+        <p class="muted">Uses the first lead's data so you see a real personalised message. Emails get a "[TEST]" subject prefix.</p>
+        <form id="testForm" class="row">
+          <label class="grow">Your email <input id="testEmail" type="email" placeholder="you@example.com" /></label>
+          <label class="grow">Your WhatsApp number <input id="testPhone" placeholder="+234 803 000 0000" /></label>
+          <button class="primary" type="submit">Send test</button>
+        </form>
+        <div id="testOut" class="muted"></div>
+      </div>
+      <div class="actions"><button class="primary" data-goto="send">Next: send →</button></div>
+    </section>
+
+    <!-- 4. Send -->
+    <section id="step-send" class="step">
+      <div class="card">
+        <h2>Dry run</h2>
+        <p class="muted">Renders every personalised message and walks through the whole job without sending anything. Use it to check every lead's message.</p>
+        <button class="primary" id="dryRunBtn">Start dry run</button>
+      </div>
+      <div class="card danger-zone">
+        <h2>Send for real</h2>
+        <ul class="checklist" id="liveChecklist"></ul>
+        <label class="check"><input type="checkbox" id="lawfulBasis" /> I have a lawful basis to contact every lead in this file (consent or legitimate interest), and I'll honour opt-outs.</label>
+        <label>Type <b id="confirmPhrase">SEND 0</b> to confirm <input id="confirmInput" autocomplete="off" /></label>
+        <button class="danger" id="liveBtn" disabled>Start sending</button>
+        <div id="sendError" class="error hidden"></div>
+      </div>
+    </section>
+
+    <!-- Dashboard -->
+    <section id="step-jobs" class="step">
+      <div class="card">
+        <div class="card-head">
+          <h2>Jobs</h2>
+          <select id="jobSelect"></select>
+        </div>
+        <div id="jobEmpty" class="muted">No jobs yet. Start a dry run or a real send from step 4.</div>
+        <div id="jobView" class="hidden">
+          <div class="job-head">
+            <div><span id="jobMode" class="badge"></span> <span id="jobStatus" class="badge"></span> <span id="jobSource" class="muted"></span></div>
+            <div class="row">
+              <button id="pauseBtn">Pause</button>
+              <button id="resumeBtn">Resume</button>
+              <button id="retryBtn">Retry failed</button>
+              <a id="resultsLink" class="button" download>Results CSV</a>
+              <a id="reportLink" class="button primary" download>WhatsApp report CSV</a>
+            </div>
+          </div>
+          <div id="pausedReason" class="notice hidden"></div>
+          <div id="jobCounts" class="stats"></div>
+          <div id="channelBars" class="bars"></div>
+          <div class="filter-row">
+            <label>Show
+              <select id="leadFilter">
+                <option value="all">All leads</option>
+                <option value="failed">Failed</option>
+                <option value="pending">Pending</option>
+                <option value="report">In WhatsApp report</option>
+                <option value="skipped">Skipped</option>
+              </select>
+            </label>
+            <input id="leadSearch" placeholder="Search name or email" />
+          </div>
+          <div class="table-wrap"><table id="leadTable"></table></div>
+          <details class="log"><summary>Activity log</summary><ol id="jobLog"></ol></details>
+        </div>
+      </div>
+    </section>
+
+    <!-- Suppression -->
+    <section id="step-suppression" class="step">
+      <div class="card">
+        <h2>Do-not-contact list</h2>
+        <p class="muted">Checked right before every send. Unsubscribe links and WhatsApp "STOP" replies are added here automatically.</p>
+        <form id="suppressForm" class="row">
+          <select id="suppressType"><option value="email">Email</option><option value="phone">Phone</option></select>
+          <input id="suppressValue" class="grow" placeholder="email@example.com or +234…" required />
+          <button class="primary" type="submit">Add</button>
+        </form>
+        <div class="grid2">
+          <div><h3>Emails</h3><ul id="suppressEmails" class="plain"></ul></div>
+          <div><h3>Phones</h3><ul id="suppressPhones" class="plain"></ul></div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <dialog id="leadDialog">
+    <form method="dialog"><button class="close" aria-label="Close">×</button></form>
+    <div id="leadDialogBody"></div>
+  </dialog>
+
+  <script src="app.js" type="module"></script>
+</body>
+</html>

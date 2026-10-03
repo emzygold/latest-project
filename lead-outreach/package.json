@@ -1,0 +1,26 @@
+{
+  "name": "lead-outreach",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Upload a CSV of leads, send each a personalised email and WhatsApp message, and export a report of leads not reachable on WhatsApp.",
+  "type": "module",
+  "main": "src/server.js",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "node --watch src/server.js",
+    "test": "node --test --test-reporter=spec \"test/*.test.js\""
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.131.0",
+    "csv-parse": "^7.0.3",
+    "csv-stringify": "^6.9.0",
+    "dotenv": "^18.0.5",
+    "express": "^5.2.1",
+    "libphonenumber-js": "^1.13.14",
+    "multer": "^2.4.0",
+    "nodemailer": "^10.0.13"
+  }
+}

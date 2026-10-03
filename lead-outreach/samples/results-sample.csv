@@ -1,0 +1,11 @@
+﻿Line,Name,Email,Phone Number,Phone (international),Socials,Email Status,Email Detail,Email Attempts,Email Sent At,WhatsApp Status,WhatsApp Detail,WhatsApp Attempts,WhatsApp Sent At,Report Reason,Notes
+2,Ada Okafor,ada.okafor@example.com,+1 202 555 0143,+12025550143,@adabakes,sent,,1,2026-10-03T00:57:56.210Z,delivered,,1,2026-10-03T00:57:56.734Z,,
+3,Tunde Bello,TUNDE.BELLO@example.com,(202) 555-0187,+12025550187,,sent,,1,2026-10-03T00:57:57.211Z,delivered,,1,2026-10-03T00:57:57.547Z,,
+4,Chioma Eze,chioma.eze@example.com,,,instagram.com/chiomastyles,sent,,1,2026-10-03T00:57:58.447Z,skipped,No phone number,0,,No phone number,No phone number
+5,Grace Smith,grace.smith@example.com,12345,,linkedin.com/in/gracesmith,sent,,1,2026-10-03T00:57:59.015Z,skipped,Invalid number format,0,,Invalid number format,"Invalid phone ""12345"""
+6,Musa Ibrahim,musa.ibrahim@example,+1 202 555 0121,+12025550121,@musafits,skipped,Invalid email,0,,delivered,,1,2026-10-03T00:57:59.351Z,,"Invalid email ""musa.ibrahim@example"""
+7,Ada Okafor (2),ada.okafor@example.com,+1 202 555 0162,+12025550162,,skipped,Duplicate of line 2,0,,delivered,,1,2026-10-03T00:57:59.907Z,,Duplicate email (same as line 2): email skipped
+8,Kemi Adeyemi,kemi.adeyemi@example.com,+1 202 555 0143,+12025550143,@kemicakes,sent,,1,2026-10-03T00:58:00.353Z,skipped,Duplicate of line 2,0,,,Duplicate phone (same as line 2): WhatsApp skipped
+9,Dr. John Doe,john.doe@example.com,1-202-555-0100,+12025550100,x.com/johndoe,sent,,1,2026-10-03T00:58:00.793Z,failed,Not active on WhatsApp (131026),1,2026-10-03T00:58:01.328Z,Not active on WhatsApp,
+10,,no.name@example.com,+1 202 555 0175,+12025550175,,sent,,1,2026-10-03T00:58:01.631Z,delivered,,1,2026-10-03T00:58:01.948Z,,No name: the fallback greeting will be used
+11,Ngozi Umeh,ngozi.umeh@example.com,0012025550158,+12025550158,@ngozi.designs,sent,,1,2026-10-03T00:58:02.426Z,delivered,,1,2026-10-03T00:58:02.866Z,,
