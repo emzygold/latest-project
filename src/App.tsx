@@ -1,4 +1,5 @@
-import { Link, Route, Routes } from 'react-router-dom'
+import { Link, Route, Routes, useLocation } from 'react-router-dom'
+import { AnimatePresence, MotionConfig, motion } from 'motion/react'
 import Home from './pages/Home'
 import CreateEvent from './pages/CreateEvent'
 import HostDashboard from './pages/HostDashboard'
@@ -8,8 +9,18 @@ import Camera from './pages/Camera'
 import Album from './pages/Album'
 
 export default function App() {
+  const location = useLocation()
   return (
-    <Routes>
+    <MotionConfig reducedMotion="user">
+      <AnimatePresence mode="wait">
+        <motion.div
+          key={location.pathname}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.25 }}
+        >
+          <Routes location={location}>
       <Route path="/" element={<Home />} />
       <Route path="/create" element={<CreateEvent />} />
       <Route path="/host/:code" element={<HostDashboard />} />
@@ -18,7 +29,10 @@ export default function App() {
       <Route path="/e/:code/camera" element={<Camera />} />
       <Route path="/e/:code/album" element={<Album />} />
       <Route path="*" element={<NotFound />} />
-    </Routes>
+          </Routes>
+        </motion.div>
+      </AnimatePresence>
+    </MotionConfig>
   )
 }
 

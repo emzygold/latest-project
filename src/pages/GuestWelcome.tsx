@@ -1,5 +1,6 @@
 import { useEffect, useState, type FormEvent } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
+import { motion } from 'motion/react'
 import Spinner from '../components/Spinner'
 import { store } from '../lib/store'
 import type { EventInfo, Guest } from '../lib/types'
@@ -53,7 +54,12 @@ export default function GuestWelcome() {
       <div className="pointer-events-none absolute -right-24 -top-24 h-72 w-72 rounded-full bg-gold/15 blur-3xl" />
       <div className="pointer-events-none absolute -bottom-32 -left-20 h-80 w-80 rounded-full bg-primary-lift/50 blur-3xl" />
 
-      <div className="relative mx-auto flex w-full max-w-md flex-1 flex-col justify-center px-6 py-12">
+      <motion.div
+        className="relative mx-auto flex w-full max-w-md flex-1 flex-col justify-center px-6 py-12"
+        initial={{ opacity: 0, y: 24 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+      >
         <p className="text-center text-xs font-semibold uppercase tracking-[0.35em] text-gold">You&apos;re invited to shoot</p>
         <h1 className="heading mt-4 text-center text-5xl leading-tight">{event.title}</h1>
         <p className="mt-2 text-center text-night-ink/75">{formatEventDate(event.eventDate)}</p>
@@ -118,7 +124,7 @@ export default function GuestWelcome() {
           <li>🌙 Photos develop and appear in the shared album later.</li>
           <li>🔒 No app or account needed.</li>
         </ul>
-      </div>
+      </motion.div>
     </main>
   )
 }

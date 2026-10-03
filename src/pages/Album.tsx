@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
+import { motion } from 'motion/react'
 import Countdown from '../components/Countdown'
 import Lightbox from '../components/Lightbox'
 import Logo from '../components/Logo'
@@ -118,14 +119,19 @@ export default function Album() {
         ) : (
           <div className="columns-2 gap-1 sm:columns-3 lg:columns-4">
             {shown.map((p, i) => (
-              <button
+              <motion.button
                 key={p.id}
                 onClick={() => setOpen(i)}
                 className="mb-1 block w-full overflow-hidden rounded-sm bg-night-card"
                 aria-label={`Open photo by ${p.guestName}`}
+                // Each photo "develops": it fades up from a dark, sepia negative.
+                initial={{ opacity: 0, filter: 'brightness(0.15) sepia(1)' }}
+                whileInView={{ opacity: 1, filter: 'brightness(1) sepia(0)' }}
+                viewport={{ once: true, margin: '0px 0px -5% 0px' }}
+                transition={{ duration: 1.4, delay: (i % 8) * 0.08 }}
               >
-                <img src={p.url} alt="" loading="lazy" className="w-full transition duration-300 hover:scale-[1.02]" />
-              </button>
+                <img src={p.url} alt="" loading="lazy" className="w-full transition duration-500 hover:scale-[1.03]" />
+              </motion.button>
             ))}
           </div>
         )}

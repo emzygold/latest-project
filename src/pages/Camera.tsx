@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
+import { AnimatePresence, motion } from 'motion/react'
 import Spinner from '../components/Spinner'
 import { capturePhoto, viewfinderAspect } from '../lib/film'
 import { store } from '../lib/store'
@@ -233,7 +234,21 @@ export default function Camera() {
       <footer className="grid grid-cols-3 items-center px-6 pb-[max(1.5rem,env(safe-area-inset-bottom))] pt-3">
         <div className="justify-self-start">
           <div className="rounded-xl bg-night-card px-3 py-2 text-center">
-            <div className="font-mono text-2xl font-bold leading-none text-gold tabular-nums">{remaining}</div>
+            <div className="relative h-6 overflow-hidden font-mono text-2xl font-bold leading-none text-gold tabular-nums">
+              {/* Film-counter wheel: the old number rolls up, the new one rolls in */}
+              <AnimatePresence mode="popLayout" initial={false}>
+                <motion.span
+                  key={remaining}
+                  className="block"
+                  initial={{ y: '100%' }}
+                  animate={{ y: '0%' }}
+                  exit={{ y: '-100%' }}
+                  transition={{ type: 'spring', stiffness: 400, damping: 30 }}
+                >
+                  {remaining}
+                </motion.span>
+              </AnimatePresence>
+            </div>
             <div className="mt-1 text-[10px] uppercase tracking-wider text-night-ink/60">shots left</div>
           </div>
         </div>
