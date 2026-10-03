@@ -25,6 +25,14 @@ Open http://localhost:5173. With no configuration it runs in **demo mode**: ever
 
 > The camera only works on `https://` or `localhost`. To test on your phone, deploy it (see below), or use a tunnel such as `npx localtunnel --port 5173`.
 
+## One-file version
+
+```bash
+npm run build:single
+```
+
+This creates `dist-single/flashback.html`: the whole app in one HTML file that you can open by double-clicking or host anywhere. It uses `#/` links (for example `flashback.html#/e/ABC123`) so it doesn't need server rewrites.
+
 ## Connect Supabase (real shared albums)
 
 1. Create a free project at https://supabase.com.

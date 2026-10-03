@@ -73,12 +73,20 @@ export function isRevealed(revealAt: string, now = Date.now()): boolean {
   return new Date(revealAt).getTime() <= now
 }
 
+/** True for the one-file build, which uses #/ links so it works from any location. */
+export const SINGLE_FILE = Boolean(import.meta.env.VITE_SINGLE_FILE)
+
+function appUrl(path: string): string {
+  if (SINGLE_FILE) return `${window.location.href.split('#')[0]}#${path}`
+  return `${window.location.origin}${path}`
+}
+
 export function guestUrl(code: string): string {
-  return `${window.location.origin}/e/${code}`
+  return appUrl(`/e/${code}`)
 }
 
 export function hostUrl(code: string, hostKey: string): string {
-  return `${window.location.origin}/host/${code}#key=${hostKey}`
+  return appUrl(`/host/${code}#key=${hostKey}`)
 }
 
 /** Value for <input type="datetime-local"> in the user's own time zone. */
