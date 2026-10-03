@@ -1,0 +1,102 @@
+@import "tailwindcss";
+
+/*
+  Brand palette (from event_app_color_palette.xlsx).
+  Always use these tokens (bg-primary, text-ink-2, ...) instead of raw hex values.
+*/
+@theme {
+  --color-primary: #6F1018;
+  --color-primary-dark: #4F0B11;
+  --color-primary-tint: #F6E9EA;
+  --color-gold: #C9A24A;
+  --color-page: #FAF7F5;
+  --color-surface: #FFFFFF;
+  --color-line: #E6DCDD;
+  --color-ink: #1F1415;
+  --color-ink-2: #6B5F60;
+
+  /* Dark gallery mode */
+  --color-night: #1A0F10;
+  --color-night-card: #2A1A1C;
+  --color-night-ink: #F5EDEE;
+  --color-primary-lift: #9B2C35;
+
+  /* Status (kept separate from the brand burgundy) */
+  --color-success: #2E7D5B;
+  --color-warning: #D98E04;
+  --color-danger: #E5484D;
+
+  --font-serif: "Cormorant Garamond", Georgia, serif;
+  --font-sans: "Inter", system-ui, -apple-system, sans-serif;
+}
+
+html,
+body {
+  background: var(--color-page);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Reusable building blocks (Tailwind v4 custom utilities). */
+@utility btn {
+  @apply inline-flex items-center justify-center gap-2 rounded-full px-6 py-3 text-sm font-semibold transition active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-50;
+}
+
+@utility btn-primary {
+  @apply btn bg-primary text-white hover:bg-primary-dark;
+}
+
+@utility btn-secondary {
+  @apply btn border border-primary bg-surface text-primary hover:bg-primary-tint;
+}
+
+@utility btn-gold {
+  @apply btn bg-gold text-ink hover:brightness-95;
+}
+
+@utility btn-danger {
+  @apply btn bg-danger font-bold text-white;
+}
+
+@utility btn-night {
+  @apply btn bg-primary-lift text-white hover:brightness-110;
+}
+
+@utility card {
+  @apply rounded-2xl border border-line bg-surface;
+}
+
+@utility input {
+  @apply w-full rounded-xl border border-line bg-surface px-4 py-3 text-ink outline-none transition placeholder:text-ink-2/60 focus:border-primary focus:ring-2 focus:ring-primary-tint;
+}
+
+@utility label {
+  @apply mb-1.5 block text-sm font-medium text-ink;
+}
+
+@utility heading {
+  @apply font-serif font-semibold tracking-tight;
+}
+
+@keyframes flash {
+  from { opacity: 0.95; }
+  to { opacity: 0; }
+}
+.animate-flash {
+  animation: flash 350ms ease-out forwards;
+}
+
+@keyframes develop {
+  0%, 100% { opacity: 0.55; }
+  50% { opacity: 1; }
+}
+.animate-develop {
+  animation: develop 2.4s ease-in-out infinite;
+}
+
+@media print {
+  .no-print { display: none !important; }
+  body { background: white; }
+}

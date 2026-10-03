@@ -1,0 +1,10 @@
+{
+  "name": "FlashBack",
+  "short_name": "FlashBack",
+  "description": "A digital disposable camera for weddings and events.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#FAF7F5",
+  "theme_color": "#6F1018",
+  "icons": [{ "src": "/icon.svg", "sizes": "any", "type": "image/svg+xml" }]
+}
