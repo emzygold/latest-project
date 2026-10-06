@@ -1,0 +1,56 @@
+{
+  "expo": {
+    "name": "Snapwall",
+    "slug": "snapwall",
+    "scheme": "snapwall",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "light",
+    "splash": {
+      "image": "./assets/splash-icon.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#0B0A12"
+    },
+    "ios": {
+      "supportsTablet": false,
+      "bundleIdentifier": "com.snapwall.app"
+    },
+    "android": {
+      "package": "com.snapwall.app",
+      "adaptiveIcon": {
+        "backgroundColor": "#0B0A12",
+        "foregroundImage": "./assets/android-icon-foreground.png",
+        "backgroundImage": "./assets/android-icon-background.png",
+        "monochromeImage": "./assets/android-icon-monochrome.png"
+      },
+      "predictiveBackGestureEnabled": false
+    },
+    "web": {
+      "favicon": "./assets/favicon.png"
+    },
+    "plugins": [
+      "expo-router",
+      [
+        "expo-camera",
+        {
+          "cameraPermission": "Snapwall uses your camera to take photos for the events you join and to scan event QR codes.",
+          "microphonePermission": false,
+          "recordAudioAndroid": false,
+          "barcodeScannerEnabled": true
+        }
+      ],
+      [
+        "expo-media-library",
+        {
+          "photosPermission": "Snapwall saves event photos you choose to your photo library.",
+          "savePhotosPermission": "Snapwall saves event photos you choose to your photo library.",
+          "isAccessMediaLocationEnabled": false
+        }
+      ]
+    ],
+    "experiments": {
+      "typedRoutes": true
+    }
+  }
+}
