@@ -3,135 +3,148 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Ease Estate · Dashboard</title>
+<title>Dashboard · Ease Estate</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@700;800&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/style.css">
 <style>
-  :root { --brand:#0f766e; --ink:#14201e; --mut:#5d6f6b; --line:#dfe6e4; }
-  * { box-sizing:border-box; }
-  body { font:15px/1.45 system-ui,sans-serif; margin:0; color:var(--ink); background:#f4f6f5; }
-  header { background:var(--brand); color:#fff; padding:14px 20px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; }
-  nav button { background:transparent; border:0; color:#fff; font:inherit; padding:6px 12px; cursor:pointer; opacity:.75; border-bottom:2px solid transparent; }
-  nav button.on { opacity:1; border-color:#fff; }
-  main { max-width:1000px; margin:0 auto; padding:20px; }
-  .stats { display:grid; grid-template-columns:repeat(auto-fit,minmax(130px,1fr)); gap:12px; margin-bottom:20px; }
-  .stat { background:#fff; border:1px solid var(--line); border-radius:10px; padding:12px 14px; }
-  .stat b { font-size:1.6rem; display:block; } .stat span { color:var(--mut); font-size:.85rem; }
-  .card { background:#fff; border:1px solid var(--line); border-radius:10px; padding:14px 16px; margin-bottom:10px; }
-  .row { display:flex; justify-content:space-between; gap:10px; flex-wrap:wrap; align-items:center; }
-  .mut { color:var(--mut); font-size:.88rem; } .tag { font-size:.75rem; padding:2px 8px; border-radius:99px; background:#e6efed; color:var(--brand); }
-  select, input, textarea, button { font:inherit; }
-  select, input, textarea { padding:8px 10px; border:1px solid #c9d4d1; border-radius:8px; width:100%; }
-  button.pri { background:var(--brand); color:#fff; border:0; padding:9px 16px; border-radius:8px; cursor:pointer; }
-  button.link { background:none; border:0; color:var(--brand); cursor:pointer; padding:0; }
-  button.danger { color:#b42318; }
-  .grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(170px,1fr)); gap:10px; }
-  a { color:var(--brand); }
-  .chat { background:#f4f6f5; border-radius:8px; padding:8px 12px; margin-top:10px; max-height:260px; overflow:auto; }
-  .chat p { margin:4px 0; } .chat .u { color:var(--brand); font-weight:600; }
-  #login { max-width:340px; margin:80px auto; background:#fff; padding:24px; border-radius:12px; border:1px solid var(--line); }
-  [hidden] { display:none !important; }
+  .tabs { display:flex; gap:8px; margin:6px 0 18px; flex-wrap:wrap; }
+  .tabs .btn { box-shadow:3px 3px 0 var(--ink); } .tabs .btn.off { background:#fff; }
+  .stats { display:grid; grid-template-columns:repeat(auto-fit,minmax(120px,1fr)); gap:12px; margin-bottom:20px; }
+  .stat { padding:12px 14px; } .stat b { font:800 2rem 'Bricolage Grotesque',sans-serif; display:block; line-height:1; } .stat span { font-weight:700; font-size:.85rem; }
+  .board { display:grid; grid-template-columns:repeat(5,minmax(210px,1fr)); gap:14px; overflow-x:auto; padding-bottom:14px; align-items:start; }
+  .col { border:var(--bd); border-radius:var(--r); padding:10px; min-height:140px; background:#ffffffb0; }
+  .col.over { outline:4px dashed var(--violet); }
+  .col h3 { font-size:1.05rem; margin:2px 4px 10px; display:flex; justify-content:space-between; }
+  .lead { background:#fff; border:var(--bd); border-radius:14px; padding:10px 12px; margin-bottom:10px; cursor:grab; box-shadow:3px 3px 0 var(--ink); font-size:.92rem; }
+  .lead.drag { opacity:.4; } .lead b { font-size:1rem; }
+  .lead .row { display:flex; justify-content:space-between; align-items:center; gap:6px; }
+  .lead button.lnk { background:none; border:0; font:700 .85rem 'Space Grotesk',sans-serif; text-decoration:underline; cursor:pointer; padding:0; }
+  .lead .chat { background:var(--paper); border:2px solid var(--ink); border-radius:10px; padding:6px 10px; margin-top:8px; max-height:200px; overflow:auto; font-size:.85rem; }
+  .st-new{background:var(--sun)} .st-contacted{background:var(--sky)} .st-inspection{background:var(--violet);color:#fff} .st-won{background:var(--lime)} .st-lost{background:#ddd}
+  .grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(260px,1fr)); gap:16px; }
+  #lf { display:grid; grid-template-columns:repeat(auto-fit,minmax(170px,1fr)); gap:10px; margin-bottom:20px; background:var(--lime); }
+  #lf textarea,#lf button { grid-column:1/-1; }
+  #login { max-width:380px; margin:12vh auto; text-align:center; } #login input { margin:14px 0; }
+  .toast { position:fixed; bottom:20px; left:50%; transform:translateX(-50%); background:var(--ink); color:#fff; padding:10px 18px; border-radius:999px; font-weight:700; z-index:9; }
+  @media (max-width:760px){ .board{grid-template-columns:repeat(5,80vw);} }
 </style>
 </head>
 <body>
-<div id="login" hidden>
-  <h2 style="margin-top:0">Ease Estate</h2>
-  <p class="mut">Enter your admin token (<code>ADMIN_TOKEN</code> in .env)</p>
-  <input id="tok" type="password" placeholder="Admin token">
-  <p><button class="pri" id="go">Open dashboard</button> <span id="err" class="mut"></span></p>
+<div class="wrap">
+<nav class="nav"><a class="logo" href="/"><i>E</i>ase Estate</a><div id="top" hidden><a class="btn sm white" href="/chat" target="_blank">Test the bot</a> <button class="btn sm pink" id="out">Sign out</button></div></nav>
+
+<div id="login" class="card" hidden>
+  <h2>Agent login 🔐</h2><p class="mut">Use the <code>ADMIN_TOKEN</code> from your .env</p>
+  <input id="tok" type="password" placeholder="Admin token" autocomplete="current-password">
+  <button class="btn" id="go">Let me in</button><p id="err" class="mut"></p>
 </div>
+
 <div id="app" hidden>
-  <header>
-    <strong>Ease Estate</strong>
-    <nav><button data-tab="leads" class="on">Leads</button><button data-tab="listings">Listings</button><button id="out">Sign out</button></nav>
-  </header>
-  <main>
-    <section id="leads"><div class="stats" id="stats"></div>
-      <div class="row" style="margin-bottom:12px"><span class="mut">Newest activity first</span>
-        <select id="filter" style="width:auto"><option value="">All statuses</option><option>new</option><option>contacted</option><option>inspection</option><option>won</option><option>lost</option></select></div>
-      <div id="leadlist"></div></section>
-    <section id="listings" hidden>
-      <form id="lf" class="card"><div class="grid">
-        <input name="title" placeholder="Title (3 Bedroom Flat, Lekki)" required>
-        <select name="type"><option value="rent">For rent (price per year)</option><option value="sale">For sale</option></select>
-        <input name="price" type="number" min="1" placeholder="Price in ₦" required>
-        <input name="location" placeholder="Area (Lekki, Lagos)" required>
-        <input name="bedrooms" type="number" min="0" placeholder="Bedrooms">
-        <input name="bathrooms" type="number" min="0" placeholder="Bathrooms"></div>
-        <textarea name="description" rows="2" placeholder="Features the bot can mention: power, security, title docs..." style="margin:10px 0"></textarea>
-        <button class="pri">Add listing</button></form>
-      <div id="listinglist"></div></section>
-  </main>
+  <div class="tabs"><button class="btn sm" data-tab="leads">Leads 🔥</button><button class="btn sm off" data-tab="listings">Listings 🏠</button></div>
+  <section id="leads">
+    <div class="stats" id="stats"></div>
+    <p class="mut">Drag cards between columns to update their status.</p>
+    <div class="board" id="board"></div>
+  </section>
+  <section id="listings" hidden>
+    <form id="lf" class="card">
+      <input name="title" placeholder="Title (3 Bed Flat, Lekki)" required>
+      <select name="type"><option value="rent">For rent (₦ per year)</option><option value="sale">For sale</option></select>
+      <input name="price" type="number" min="1" placeholder="Price in ₦" required>
+      <input name="location" placeholder="Area (Lekki, Lagos)" required>
+      <input name="bedrooms" type="number" min="0" placeholder="Bedrooms"><input name="bathrooms" type="number" min="0" placeholder="Bathrooms">
+      <textarea name="description" rows="2" placeholder="What can the bot brag about? Power, security, title docs…"></textarea>
+      <button class="btn violet">Add listing ➕</button>
+    </form>
+    <div class="grid" id="listinglist"></div>
+  </section>
+</div>
 </div>
 <script>
 const $ = (s) => document.querySelector(s);
 const naira = (n) => '₦' + Number(n).toLocaleString('en-NG');
 const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c]));
+const COLS = [['new','New 🆕'],['contacted','Contacted 📞'],['inspection','Inspection 🏠'],['won','Won 🏆'],['lost','Lost 💨']];
 let token = ''; try { token = localStorage.getItem('ee_admin') || ''; } catch {}
 
+function toast(t) { const d = document.createElement('div'); d.className = 'toast'; d.textContent = t; document.body.appendChild(d); setTimeout(() => d.remove(), 1800); }
 async function call(path, opts = {}) {
   const r = await fetch(path, { ...opts, headers: { 'content-type': 'application/json', authorization: 'Bearer ' + token } });
   if (r.status === 401) { signOut(); throw new Error('unauthorized'); }
   return r.json();
 }
-function signOut() { token = ''; try { localStorage.removeItem('ee_admin'); } catch {} $('#app').hidden = true; $('#login').hidden = false; }
+function signOut() { token = ''; try { localStorage.removeItem('ee_admin'); } catch {} $('#app').hidden = true; $('#top').hidden = true; $('#login').hidden = false; }
 async function start() {
   if (!token) return signOut();
-  try { await call('/api/stats'); } catch { $('#err').textContent = 'Wrong token'; return; }
-  $('#login').hidden = true; $('#app').hidden = false; loadLeads(); loadListings();
+  try { await call('/api/stats'); } catch { $('#err').textContent = 'Wrong token 😬'; return; }
+  $('#login').hidden = true; $('#app').hidden = false; $('#top').hidden = false; loadLeads(); loadListings();
 }
 $('#go').onclick = () => { token = $('#tok').value.trim(); try { localStorage.setItem('ee_admin', token); } catch {} start(); };
+$('#tok').addEventListener('keydown', (e) => { if (e.key === 'Enter') $('#go').click(); });
 $('#out').onclick = signOut;
-document.querySelectorAll('nav [data-tab]').forEach((b) => b.onclick = () => {
-  document.querySelectorAll('nav [data-tab]').forEach((x) => x.classList.toggle('on', x === b));
+document.querySelectorAll('[data-tab]').forEach((b) => b.onclick = () => {
+  document.querySelectorAll('[data-tab]').forEach((x) => x.classList.toggle('off', x !== b));
   $('#leads').hidden = b.dataset.tab !== 'leads'; $('#listings').hidden = b.dataset.tab !== 'listings';
 });
 
 async function loadLeads() {
-  const [s, leads] = await Promise.all([call('/api/stats'), call('/api/leads' + ($('#filter').value ? '?status=' + $('#filter').value : ''))]);
-  $('#stats').innerHTML = [['Total leads', s.total], ['With phone', s.with_phone], ['New', s.leads.new || 0], ['Inspections', s.leads.inspection || 0], ['Won', s.leads.won || 0], ['Live listings', s.listings]]
-    .map(([k, v]) => `<div class="stat"><b>${v}</b><span>${k}</span></div>`).join('');
-  $('#leadlist').innerHTML = leads.length ? leads.map((l) => `
-    <div class="card" data-id="${l.id}">
-      <div class="row"><strong>${esc(l.name || 'Unknown visitor')}</strong>
-        <select class="st" style="width:auto">${['new','contacted','inspection','won','lost'].map((x) => `<option ${x === l.status ? 'selected' : ''}>${x}</option>`).join('')}</select></div>
-      <div class="mut">${l.phone ? `<a href="https://wa.me/${esc(l.phone.replace(/\D/g, ''))}" target="_blank" rel="noopener">${esc(l.phone)}</a> · ` : ''}${esc(l.channel)} · ${esc(l.updated_at)}</div>
-      <div style="margin:6px 0">${l.intent ? `<span class="tag">${esc(l.intent)}</span> ` : ''}${l.budget ? `Budget ${naira(l.budget)} · ` : ''}${esc(l.location || '')}${l.timeline ? ' · ' + esc(l.timeline) : ''}${l.listing_title ? '<br>Interested in: ' + esc(l.listing_title) : ''}</div>
-      ${l.summary ? `<div class="mut">${esc(l.summary)}</div>` : ''}
-      <button class="link tr">View conversation</button><div class="chat" hidden></div>
-    </div>`).join('') : '<p class="mut">No leads yet. Share the chat link or connect WhatsApp.</p>';
+  const [s, leads] = await Promise.all([call('/api/stats'), call('/api/leads')]);
+  $('#stats').innerHTML = [['Total leads', s.total, 'var(--sun)'], ['With phone', s.with_phone, 'var(--sky)'], ['Inspections', s.leads.inspection || 0, 'var(--violet)'], ['Won', s.leads.won || 0, 'var(--lime)'], ['Live listings', s.listings, '#fff']]
+    .map(([k, v, c]) => `<div class="card stat" style="background:${c};${c === 'var(--violet)' ? 'color:#fff' : ''}"><b>${v}</b><span>${k}</span></div>`).join('');
+  $('#board').innerHTML = COLS.map(([key, label]) => {
+    const items = leads.filter((l) => l.status === key);
+    return `<div class="col" data-col="${key}"><h3>${label}<span>${items.length}</span></h3>${items.map(leadCard).join('')}</div>`;
+  }).join('');
 }
-$('#filter').onchange = loadLeads;
-$('#leadlist').addEventListener('change', async (e) => {
-  if (!e.target.classList.contains('st')) return;
-  await call('/api/leads/' + e.target.closest('.card').dataset.id, { method: 'PATCH', body: JSON.stringify({ status: e.target.value }) }); loadLeads();
+function leadCard(l) {
+  return `<div class="lead" draggable="true" data-id="${l.id}">
+    <div class="row"><b>${esc(l.name || 'Unknown visitor')}</b><span class="pill ${l.intent === 'rent' ? 'rent' : l.intent === 'buy' ? 'sale' : ''}">${esc(l.intent || '?')}</span></div>
+    <div>${l.phone ? `<a href="https://wa.me/${esc(l.phone.replace(/\D/g, ''))}" target="_blank" rel="noopener">💬 ${esc(l.phone)}</a>` : '<span class="mut">no phone yet</span>'}</div>
+    <div class="mut">${l.budget ? naira(l.budget) + ' · ' : ''}${esc(l.location || '')} · ${esc(l.channel)}</div>
+    ${l.listing_title ? `<div>🏠 ${esc(l.listing_title)}</div>` : ''}
+    <button class="lnk tr">chat history</button><div class="chat" hidden></div></div>`;
+}
+const board = $('#board');
+board.addEventListener('dragstart', (e) => { const c = e.target.closest('.lead'); if (c) { e.dataTransfer.setData('text/plain', c.dataset.id); c.classList.add('drag'); } });
+board.addEventListener('dragend', (e) => { e.target.closest?.('.lead')?.classList.remove('drag'); document.querySelectorAll('.col.over').forEach((c) => c.classList.remove('over')); });
+board.addEventListener('dragover', (e) => { const c = e.target.closest('.col'); if (c) { e.preventDefault(); document.querySelectorAll('.col.over').forEach((x) => x !== c && x.classList.remove('over')); c.classList.add('over'); } });
+board.addEventListener('drop', async (e) => {
+  const c = e.target.closest('.col'); if (!c) return; e.preventDefault();
+  const id = e.dataTransfer.getData('text/plain'); if (!id) return;
+  await call('/api/leads/' + id, { method: 'PATCH', body: JSON.stringify({ status: c.dataset.col }) });
+  toast('Moved to ' + c.dataset.col + ' ✅'); loadLeads();
 });
-$('#leadlist').addEventListener('click', async (e) => {
+board.addEventListener('click', async (e) => {
   if (!e.target.classList.contains('tr')) return;
-  const card = e.target.closest('.card'), box = card.querySelector('.chat');
+  const card = e.target.closest('.lead'), box = card.querySelector('.chat');
   if (!box.hidden) return box.hidden = true;
   const msgs = await call(`/api/leads/${card.dataset.id}/messages`);
-  box.innerHTML = msgs.map((m) => `<p><span class="u">${m.role === 'user' ? 'Prospect' : 'Bot'}:</span> ${esc(m.content)}</p>`).join(''); box.hidden = false;
+  box.innerHTML = msgs.map((m) => `<p style="margin:4px 0"><b>${m.role === 'user' ? 'Them' : 'Bot'}:</b> ${esc(m.content)}</p>`).join(''); box.hidden = false;
 });
 
 async function loadListings() {
   const rows = await call('/api/listings');
   $('#listinglist').innerHTML = rows.map((l) => `
-    <div class="card" data-id="${l.id}"><div class="row"><div><strong>${esc(l.title)}</strong> <span class="tag">${l.type}</span> ${l.status === 'taken' ? '<span class="tag">taken</span>' : ''}
-      <div class="mut">${naira(l.price)}${l.type === 'rent' ? '/yr' : ''} · ${esc(l.location)} · ${l.bedrooms} bed · ${l.bathrooms} bath</div></div>
-      <div><button class="link tg">${l.status === 'taken' ? 'Mark available' : 'Mark taken'}</button> · <button class="link danger rm">Delete</button></div></div></div>`).join('');
+    <div class="card" data-id="${l.id}"><span class="pill ${l.type}">${l.type}</span> ${l.status === 'taken' ? '<span class="pill taken">taken</span>' : ''}
+    <h3 style="margin:8px 0 4px;font-size:1.15rem">${esc(l.title)}</h3><div class="mut">📍 ${esc(l.location)} · ${l.bedrooms} bed · ${l.bathrooms} bath</div>
+    <p class="price" style="margin:8px 0">${naira(l.price)}${l.type === 'rent' ? '/yr' : ''}</p>
+    <button class="btn sm white tg">${l.status === 'taken' ? 'Mark available' : 'Mark taken'}</button> <button class="btn sm pink rm">Delete</button></div>`).join('');
 }
 $('#lf').onsubmit = async (e) => {
   e.preventDefault();
-  await call('/api/listings', { method: 'POST', body: JSON.stringify(Object.fromEntries(new FormData(e.target))) });
-  e.target.reset(); loadListings();
+  const r = await call('/api/listings', { method: 'POST', body: JSON.stringify(Object.fromEntries(new FormData(e.target))) });
+  if (r.error) return toast(r.error);
+  e.target.reset(); toast('Listing added 🎉'); loadListings();
 };
 $('#listinglist').addEventListener('click', async (e) => {
-  const card = e.target.closest('.card'); if (!card) return;
-  const id = card.dataset.id;
-  if (e.target.classList.contains('rm') && confirm('Delete this listing?')) await call('/api/listings/' + id, { method: 'DELETE' });
+  const card = e.target.closest('.card'); if (!card) return; const id = card.dataset.id;
+  if (e.target.classList.contains('rm')) { if (!confirm('Delete this listing?')) return; await call('/api/listings/' + id, { method: 'DELETE' }); }
   else if (e.target.classList.contains('tg')) await call('/api/listings/' + id, { method: 'PATCH', body: JSON.stringify({ status: e.target.textContent === 'Mark taken' ? 'taken' : 'available' }) });
   else return;
   loadListings();
 });
+setInterval(() => { if (token && !$('#app').hidden && !$('#leads').hidden) loadLeads().catch(() => {}); }, 15000);
 start();
 </script>
 </body>

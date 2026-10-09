@@ -3,18 +3,69 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Ease Estate</title>
+<title>Ease Estate · find your spot</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@700;800&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/style.css">
 <style>
-  body { font:17px/1.6 system-ui,sans-serif; max-width:640px; margin:0 auto; padding:48px 20px; color:#14201e; }
-  h1 { font-size:2.2rem; margin-bottom:.2em; } p { color:#4a5a57; }
-  a.btn { display:inline-block; margin:8px 8px 0 0; padding:12px 20px; border-radius:8px; background:#0f766e; color:#fff; text-decoration:none; }
-  a.btn.alt { background:#e6efed; color:#0f766e; }
+  .hero { padding:36px 0 28px; display:grid; gap:28px; grid-template-columns:1.1fr .9fr; align-items:center; }
+  .hero h1 { font-size:clamp(2.6rem,8vw,5rem); }
+  .hero h1 mark { background:var(--lime); padding:0 .15em; border-radius:12px; border:var(--bd); display:inline-block; transform:rotate(-2deg); }
+  .hero p { font-size:1.15rem; max-width:34ch; }
+  .cta { display:flex; gap:12px; flex-wrap:wrap; margin-top:20px; }
+  .demo { background:var(--violet); transform:rotate(2deg); }
+  .bub { border:var(--bd); border-radius:16px; padding:9px 13px; margin:8px 0; max-width:88%; background:#fff; font-size:.95rem; }
+  .bub.me { background:var(--lime); margin-left:auto; }
+  .steps { display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:16px; margin:36px 0; }
+  .steps .card:nth-child(1){ background:var(--sun);} .steps .card:nth-child(2){ background:var(--sky);} .steps .card:nth-child(3){ background:var(--pink);}
+  .steps h3 { font-size:1.4rem; margin:6px 0; }
+  .sec { margin:44px 0 16px; display:flex; justify-content:space-between; align-items:end; gap:10px; flex-wrap:wrap; }
+  .sec h2 { font-size:clamp(1.8rem,5vw,2.6rem); }
+  .grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(250px,1fr)); gap:18px; }
+  footer { margin:60px 0 30px; text-align:center; }
+  @media (max-width:760px){ .hero{grid-template-columns:1fr;} .demo{transform:none;} }
 </style>
 </head>
 <body>
-  <h1>Ease Estate</h1>
-  <p>Never let a lead go cold. The AI assistant answers buyers and renters instantly, 24/7, and hands you their name, phone, budget and what they want.</p>
-  <a class="btn" href="/chat">Try the chat</a>
-  <a class="btn alt" href="/dashboard">Agent dashboard</a>
+<div class="wrap">
+  <nav class="nav"><a class="logo" href="/"><i>E</i>ase Estate</a>
+    <div><a class="btn sm white" href="/listings">Browse</a> <a class="btn sm" href="/dashboard">Agent login</a></div></nav>
+
+  <section class="hero">
+    <div>
+      <h1>Find your <mark>spot</mark>.<br>No stress, no stories.</h1>
+      <p>Chat with our AI, get real prices and real listings in seconds. Day or night. Even 2am. 🌙</p>
+      <div class="cta"><a class="btn" href="/chat">Start chatting 💬</a><a class="btn white" href="/listings">See listings 🏠</a></div>
+    </div>
+    <div class="card demo" aria-hidden="true">
+      <div class="bub me">2 bedroom to rent in Yaba under 3m</div>
+      <div class="bub">Found one 👀 2 Bed Apartment, Yaba, ₦2.8M/year. Want to see it? What's your name?</div>
+      <div class="bub me">I'm Ada, 0803 123 4567</div>
+      <div class="bub">Locked in ✅ The agent will confirm your inspection shortly.</div>
+    </div>
+  </section>
+
+  <section class="steps">
+    <div class="card"><h3>1. Ask</h3><p>Tell the bot what you want: area, budget, bedrooms.</p></div>
+    <div class="card"><h3>2. Match</h3><p>It only shows real, available listings. No fake stuff.</p></div>
+    <div class="card"><h3>3. Inspect</h3><p>Drop your number and the agent calls you fast.</p></div>
+  </section>
+
+  <div class="sec"><h2>Fresh drops 🔥</h2><a class="btn sm white" href="/listings">All listings →</a></div>
+  <div class="grid" id="grid"></div>
+
+  <footer class="mut">Ease Estate · made for agents who never want a cold lead</footer>
+</div>
+<script>
+const naira = (n) => '₦' + Number(n).toLocaleString('en-NG');
+const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c]));
+fetch('/api/public/listings').then((r) => r.json()).then((rows) => {
+  document.getElementById('grid').innerHTML = rows.slice(0, 3).map((l) => `
+    <div class="card"><span class="pill ${l.type}">${l.type === 'rent' ? 'for rent' : 'for sale'}</span>
+    <h3 style="margin:10px 0 4px;font-size:1.25rem">${esc(l.title)}</h3><div class="mut">📍 ${esc(l.location)} · ${l.bedrooms} bed · ${l.bathrooms} bath</div>
+    <p class="price" style="margin:10px 0">${naira(l.price)}${l.type === 'rent' ? '<small>/yr</small>' : ''}</p>
+    <a class="btn sm violet" href="/chat?q=${encodeURIComponent('Tell me about ' + l.title)}">Ask about this</a></div>`).join('') || '<p class="mut">No listings yet.</p>';
+}).catch(() => {});
+</script>
 </body>
 </html>

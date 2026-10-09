@@ -57,8 +57,12 @@ async function api(req, res, url) {
     const text = String(b.message || '').trim().slice(0, 1000);
     if (!text) return json(res, 400, { error: 'message required' });
     const sessionId = /^[\w-]{8,64}$/.test(b.session_id || '') ? b.session_id : randomUUID();
-    const { reply } = await handleMessage({ sessionId, channel: 'web', text });
-    return json(res, 200, { reply, session_id: sessionId });
+    const { reply, lead } = await handleMessage({ sessionId, channel: 'web', text });
+    const listing = lead.listing_id ? db.prepare("SELECT id,title,type,price,location,bedrooms,bathrooms FROM listings WHERE id = ?").get(lead.listing_id) : null;
+    return json(res, 200, { reply, session_id: sessionId, listing });
+  }
+  if (pathname === '/api/public/listings' && method === 'GET') {
+    return json(res, 200, db.prepare("SELECT id,title,type,price,location,bedrooms,bathrooms,description FROM listings WHERE status = 'available' ORDER BY id DESC").all());
   }
   if (pathname === '/api/config' && method === 'GET') {
     return json(res, 200, { agency: process.env.AGENCY_NAME || 'Ease Estate' });
@@ -139,7 +143,7 @@ async function api(req, res, url) {
 }
 
 async function serveStatic(res, pathname) {
-  const map = { '/': '/index.html', '/chat': '/chat.html', '/dashboard': '/dashboard.html' };
+  const map = { '/': '/index.html', '/chat': '/chat.html', '/listings': '/listings.html', '/dashboard': '/dashboard.html' };
   const rel = normalize(map[pathname] || pathname).replace(/^(\.\.[/\\])+/, '');
   try {
     const data = await readFile(join(PUBLIC_DIR, rel));

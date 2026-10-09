@@ -15,8 +15,10 @@ npm run seed              # optional: sample Lagos/Abuja listings
 npm start
 ```
 
-- Chat: http://localhost:3000/chat
-- Dashboard: http://localhost:3000/dashboard (sign in with `ADMIN_TOKEN`)
+- Home: http://localhost:3000/
+- Public listings (search + filters): http://localhost:3000/listings
+- Chat: http://localhost:3000/chat (add `?q=...` to prefill a message)
+- Agent dashboard: http://localhost:3000/dashboard (sign in with `ADMIN_TOKEN`). Drag leads between New, Contacted, Inspection, Won and Lost.
 
 Without `ANTHROPIC_API_KEY` a rule-based fallback bot runs (good for demos and tests). With a key, Claude handles the conversation and saves lead details through a `capture_lead` tool.
 
@@ -42,7 +44,7 @@ Import `n8n/lead-to-whatsapp.json` for a starter flow that WhatsApps the agent. 
 
 ## API
 
-Public: `POST /api/chat {message, session_id?}`, `POST /api/whatsapp` (Twilio form post).
+Public: `GET /api/public/listings`, `POST /api/chat {message, session_id?}`, `POST /api/whatsapp` (Twilio form post).
 Admin (header `Authorization: Bearer ADMIN_TOKEN`): `GET/POST /api/listings`, `PATCH/DELETE /api/listings/:id`, `GET /api/leads[?status=]`, `PATCH /api/leads/:id {status}`, `GET /api/leads/:id/messages`, `GET /api/stats`.
 
 ## Tests

@@ -136,8 +136,9 @@ async function fallbackTurn(sessionId, listings, text) {
   const known = db.prepare('SELECT * FROM leads WHERE session_id = ?').get(sessionId) || {};
   const state = { ...known, ...patch };
 
+  const isQuery = /\b(rent|buy|bed|bedroom|flat|house|apartment|duplex|land|price|available|show|see|tell me about|looking|inspection)\b/i.test(text);
   const bedMatch = lower.match(/(\d)\s*(?:bed|br)/);
-  const hits = listings.filter((l) => {
+  const hits = !isQuery ? [] : listings.filter((l) => {
     if (state.intent && l.type !== (state.intent === 'buy' ? 'sale' : 'rent')) return false;
     if (state.budget && l.price > state.budget * 1.1) return false;
     if (bedMatch && l.bedrooms !== Number(bedMatch[1])) return false;
@@ -150,16 +151,16 @@ async function fallbackTurn(sessionId, listings, text) {
   if (hits.length) {
     patch.listing_id = hits[0].id;
     if (!state.location) patch.location = hits[0].location;
-    parts.push('Here is what I have: ' + hits.map((l) => `${l.title} in ${l.location}, ${naira(l.price)}${l.type === 'rent' ? '/year' : ''}`).join('; ') + '.');
-  } else if (/\b(rent|buy|bedroom|bed|flat|house|apartment|duplex|land|price|available)\b/i.test(text)) {
-    parts.push("I don't have an exact match right now, but I'll note your requirements for the agent.");
-  } else {
+    parts.push('Found some 👀 ' + hits.map((l) => `${l.title} (${naira(l.price)}${l.type === 'rent' ? '/year' : ''})`).join(', ') + '.');
+  } else if (isQuery) {
+    parts.push("I don't have an exact match right now, but I'll note what you need for the agent.");
+  } else if (!Object.keys(patch).length) {
     parts.push(`Hi, welcome to ${AGENCY()}! Are you looking to buy or rent?`);
   }
-  if (!state.intent && hits.length) parts.push('Are you looking to buy or rent?');
-  else if (!state.budget && state.intent) parts.push('What is your budget?');
+  if (!state.intent) parts.push('Are you looking to buy or rent?');
   else if (!state.name) parts.push("What's your name?");
-  else if (!state.phone) parts.push('What phone number can the agent reach you on to arrange an inspection?');
+  else if (!state.phone) parts.push('What number can the agent reach you on to arrange an inspection?');
+  else if (!state.budget) parts.push('What is your budget?');
   else parts.push('Thanks! The agent will contact you shortly to confirm an inspection.');
 
   patch.summary = [state.intent, state.budget && naira(state.budget), patch.location || state.location].filter(Boolean).join(' · ') || undefined;

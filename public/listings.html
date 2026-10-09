@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Listings · Ease Estate</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@700;800&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/style.css">
+<style>
+  .filters { display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:10px; margin:10px 0 22px; }
+  .grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(270px,1fr)); gap:18px; padding-bottom:50px; }
+  .grid .card p { margin:8px 0; }
+  h1 { font-size:clamp(2.2rem,7vw,3.6rem); margin:8px 0 14px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <nav class="nav"><a class="logo" href="/"><i>E</i>ase Estate</a><a class="btn sm" href="/chat">Chat with AI 💬</a></nav>
+  <h1>Listings 🏠</h1>
+  <div class="filters">
+    <input id="q" placeholder="Search area or title…">
+    <select id="type"><option value="">Buy or rent</option><option value="rent">Rent</option><option value="sale">Buy</option></select>
+    <select id="beds"><option value="">Any bedrooms</option><option>1</option><option>2</option><option>3</option><option>4</option></select>
+    <input id="max" type="number" placeholder="Max price ₦">
+  </div>
+  <div class="grid" id="grid"></div>
+</div>
+<script>
+const naira = (n) => '₦' + Number(n).toLocaleString('en-NG');
+const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c]));
+let all = [];
+const $ = (id) => document.getElementById(id);
+function render() {
+  const q = $('q').value.toLowerCase(), t = $('type').value, b = $('beds').value, mx = Number($('max').value);
+  const rows = all.filter((l) => (!q || (l.title + l.location).toLowerCase().includes(q)) && (!t || l.type === t) && (!b || l.bedrooms === Number(b)) && (!mx || l.price <= mx));
+  $('grid').innerHTML = rows.map((l) => `
+    <div class="card"><span class="pill ${l.type}">${l.type === 'rent' ? 'for rent' : 'for sale'}</span>
+    <h3 style="margin:10px 0 4px;font-size:1.25rem">${esc(l.title)}</h3><div class="mut">📍 ${esc(l.location)} · ${l.bedrooms} bed · ${l.bathrooms} bath</div>
+    <p class="mut">${esc(l.description)}</p><p class="price">${naira(l.price)}${l.type === 'rent' ? '<small>/yr</small>' : ''}</p>
+    <a class="btn sm violet" href="/chat?q=${encodeURIComponent('I want to see ' + l.title)}">Book inspection</a></div>`).join('') || '<p class="mut">Nothing matches. Try different filters, or <a href="/chat">ask the bot</a>.</p>';
+}
+fetch('/api/public/listings').then((r) => r.json()).then((r) => { all = r; render(); });
+['q', 'type', 'beds', 'max'].forEach((id) => $(id).addEventListener('input', render));
+</script>
+</body>
+</html>

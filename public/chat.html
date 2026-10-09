@@ -2,50 +2,73 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Chat with us</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Chat · Ease Estate</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@700;800&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/style.css">
 <style>
-  :root { --brand:#0f766e; --bg:#f4f6f5; --me:#0f766e; --bot:#fff; --ink:#14201e; }
-  * { box-sizing:border-box; }
-  html,body { height:100%; margin:0; }
-  body { font:16px/1.45 system-ui,sans-serif; background:var(--bg); color:var(--ink); display:flex; flex-direction:column; }
-  header { background:var(--brand); color:#fff; padding:14px 16px; font-weight:600; }
-  header small { display:block; font-weight:400; opacity:.85; }
-  #log { flex:1; overflow-y:auto; padding:16px; display:flex; flex-direction:column; gap:8px; }
-  .msg { max-width:82%; padding:10px 14px; border-radius:16px; white-space:pre-wrap; word-wrap:break-word; }
-  .bot { background:var(--bot); align-self:flex-start; border-bottom-left-radius:4px; box-shadow:0 1px 2px #0001; }
-  .me { background:var(--me); color:#fff; align-self:flex-end; border-bottom-right-radius:4px; }
-  form { display:flex; gap:8px; padding:12px; background:#fff; border-top:1px solid #e3e8e6; }
-  input { flex:1; font:inherit; padding:12px 14px; border:1px solid #cfd8d5; border-radius:24px; outline:none; }
-  input:focus { border-color:var(--brand); }
-  button { font:inherit; border:0; background:var(--brand); color:#fff; padding:0 20px; border-radius:24px; cursor:pointer; }
-  button:disabled { opacity:.5; }
+  html,body { height:100%; } body { display:flex; flex-direction:column; max-width:640px; margin:0 auto; background-color:var(--violet); background-image:none; }
+  header { display:flex; align-items:center; gap:12px; padding:12px 16px; background:var(--lime); border-bottom:var(--bd); }
+  header .av { width:42px; height:42px; border-radius:50%; background:#fff; border:var(--bd); display:grid; place-items:center; font-size:1.3rem; }
+  header b { font:800 1.15rem 'Bricolage Grotesque',sans-serif; display:block; line-height:1.1; } header small { font-weight:700; }
+  header small:before { content:''; display:inline-block; width:9px; height:9px; border-radius:50%; background:#16a34a; border:2px solid var(--ink); margin-right:6px; }
+  header a { margin-left:auto; text-decoration:none; font-size:1.4rem; }
+  #log { flex:1; overflow-y:auto; padding:16px; display:flex; flex-direction:column; gap:10px; }
+  .m { max-width:86%; padding:10px 14px; border:var(--bd); border-radius:18px; background:#fff; white-space:pre-wrap; word-wrap:break-word; animation:pop .18s ease-out; }
+  .m.me { align-self:flex-end; background:var(--lime); border-bottom-right-radius:4px; box-shadow:3px 3px 0 var(--ink); }
+  .m.bot { align-self:flex-start; border-bottom-left-radius:4px; box-shadow:3px 3px 0 var(--ink); }
+  .lcard { align-self:flex-start; background:var(--sun); border:var(--bd); border-radius:18px; padding:12px 14px; box-shadow:3px 3px 0 var(--ink); max-width:86%; animation:pop .18s ease-out; }
+  .lcard b { font:800 1.05rem 'Bricolage Grotesque',sans-serif; display:block; }
+  .typing span { display:inline-block; width:8px; height:8px; margin:0 2px; border-radius:50%; background:var(--ink); animation:bounce 1s infinite; }
+  .typing span:nth-child(2){animation-delay:.15s} .typing span:nth-child(3){animation-delay:.3s}
+  .chips { display:flex; gap:8px; padding:0 16px 10px; overflow-x:auto; }
+  .chips button { flex:none; font:700 .9rem 'Space Grotesk',sans-serif; background:#fff; border:var(--bd); border-radius:999px; padding:7px 14px; cursor:pointer; box-shadow:2px 2px 0 var(--ink); }
+  form { display:flex; gap:10px; padding:12px 16px calc(12px + env(safe-area-inset-bottom)); background:var(--paper); border-top:var(--bd); }
+  form button { flex:none; width:52px; border-radius:50%; font-size:1.3rem; padding:0; justify-content:center; }
+  @keyframes pop { from { transform:scale(.9); opacity:0; } to { transform:none; opacity:1; } }
+  @keyframes bounce { 0%,60%,100% { transform:translateY(0); } 30% { transform:translateY(-6px); } }
 </style>
 </head>
 <body>
-<header><span id="agency">Ease Estate</span><small>Ask about our listings. Replies are instant.</small></header>
+<header><div class="av">🏠</div><div><b id="agency">Ease Estate</b><small>online, replies instantly</small></div><a href="/listings" title="Browse listings">🗂️</a></header>
 <div id="log" aria-live="polite"></div>
-<form id="f"><input id="m" placeholder="e.g. 2 bedroom to rent in Yaba" autocomplete="off" maxlength="1000" required><button id="b">Send</button></form>
+<div class="chips" id="chips">
+  <button>2 bed to rent in Lekki</button><button>Houses to buy under 50m</button><button>Cheapest flat in Abuja</button><button>I want an inspection</button>
+</div>
+<form id="f"><input id="m" placeholder="Type your message…" autocomplete="off" maxlength="1000" required><button class="btn" id="b" aria-label="Send">➤</button></form>
 <script>
 const log = document.getElementById('log'), f = document.getElementById('f'), m = document.getElementById('m'), b = document.getElementById('b');
-let sid = null;
-try { sid = localStorage.getItem('ee_session'); } catch {}
-const add = (text, who) => { const d = document.createElement('div'); d.className = 'msg ' + who; d.textContent = text; log.appendChild(d); log.scrollTop = log.scrollHeight; };
-fetch('/api/config').then(r => r.json()).then(c => { document.getElementById('agency').textContent = c.agency; document.title = 'Chat with ' + c.agency; }).catch(() => {});
-add('Hi! 👋 I can help you find a property to buy or rent. What are you looking for?', 'bot');
-f.addEventListener('submit', async (e) => {
-  e.preventDefault();
-  const text = m.value.trim(); if (!text) return;
-  add(text, 'me'); m.value = ''; b.disabled = true;
+const naira = (n) => '₦' + Number(n).toLocaleString('en-NG');
+let sid = null; try { sid = localStorage.getItem('ee_session'); } catch {}
+const scroll = () => { log.scrollTop = log.scrollHeight; };
+function add(text, who) { const d = document.createElement('div'); d.className = 'm ' + who; d.textContent = text; log.appendChild(d); scroll(); return d; }
+function card(l) {
+  const d = document.createElement('div'); d.className = 'lcard';
+  d.innerHTML = '<b></b><div class="mut"></div><div class="price"></div>';
+  d.children[0].textContent = l.title; d.children[1].textContent = `📍 ${l.location} · ${l.bedrooms} bed · ${l.bathrooms} bath`;
+  d.children[2].textContent = naira(l.price) + (l.type === 'rent' ? '/yr' : '');
+  log.appendChild(d); scroll();
+}
+fetch('/api/config').then((r) => r.json()).then((c) => { document.getElementById('agency').textContent = c.agency; document.title = 'Chat · ' + c.agency; }).catch(() => {});
+add("Heyy 👋 I'm the Ease Estate assistant. Looking to buy or rent? Tell me the area and budget and I'll find you something.", 'bot');
+
+let shownCard = null;
+async function send(text) {
+  add(text, 'me'); b.disabled = true; document.getElementById('chips').hidden = true;
+  const t = document.createElement('div'); t.className = 'm bot typing'; t.innerHTML = '<span></span><span></span><span></span>'; log.appendChild(t); scroll();
   try {
     const r = await fetch('/api/chat', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ message: text, session_id: sid }) });
-    const d = await r.json();
-    if (!r.ok) throw new Error(d.error);
+    const d = await r.json(); if (!r.ok) throw new Error(d.error);
     sid = d.session_id; try { localStorage.setItem('ee_session', sid); } catch {}
-    add(d.reply, 'bot');
-  } catch { add('Sorry, something went wrong. Please try again.', 'bot'); }
+    t.remove(); add(d.reply, 'bot');
+    if (d.listing && d.listing.id !== shownCard) { shownCard = d.listing.id; card(d.listing); }
+  } catch { t.remove(); add('Oops, something broke on my side 😅 try again?', 'bot'); }
   b.disabled = false; m.focus();
-});
+}
+f.addEventListener('submit', (e) => { e.preventDefault(); const t = m.value.trim(); if (t) { m.value = ''; send(t); } });
+document.getElementById('chips').addEventListener('click', (e) => { if (e.target.tagName === 'BUTTON') send(e.target.textContent); });
+const q = new URLSearchParams(location.search).get('q'); if (q) send(q.slice(0, 200));
 </script>
 </body>
 </html>
