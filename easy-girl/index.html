@@ -1,0 +1,158 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Easy Girl | Strappy Sandals</title>
+<meta name="description" content="Easy Girl strappy heeled sandals for weddings, parties and every night out. Join the waitlist for launch pricing.">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<div class="bar">Launching soon &middot; Join the waitlist for early access and launch pricing</div>
+
+<header class="head">
+  <a class="logo" href="#top">Easy Girl</a>
+  <nav>
+    <a href="#shop">Shop</a>
+    <a href="#why">Why Easy Girl</a>
+    <a href="#faq">FAQ</a>
+    <a class="btn btn-sm" href="#waitlist">Join waitlist</a>
+  </nav>
+</header>
+
+<main id="top">
+
+<section class="hero">
+  <div class="hero-copy">
+    <p class="eyebrow">New collection</p>
+    <h1>Dress up the night.<br>Keep it easy.</h1>
+    <p class="lead">Strappy heeled sandals made for weddings, birthdays and everything in between. Be first in line when we launch.</p>
+    <div class="cta-row">
+      <a class="btn" href="#waitlist">Get early access</a>
+      <a class="btn btn-ghost" href="#shop">See the sandal</a>
+    </div>
+  </div>
+  <div class="hero-art" aria-hidden="true">
+    <svg viewBox="0 0 400 360" class="shoe" data-shoe>
+      <use href="#sandal"/>
+    </svg>
+  </div>
+</section>
+
+<section class="product" id="shop">
+  <div class="gallery">
+    <div class="stage">
+      <svg viewBox="0 0 400 360" class="shoe" id="shoeStage" role="img" aria-label="Strappy sandal illustration">
+        <use href="#sandal"/>
+      </svg>
+      <span class="tag">Waitlist</span>
+    </div>
+    <p class="note">Illustration shown. Product photography is added once our first samples arrive.</p>
+  </div>
+
+  <div class="info">
+    <p class="eyebrow">Strappy Sandals</p>
+    <h2>Strappy Sandal in <span id="colorName">Black</span></h2>
+    <p class="price" id="price"></p>
+
+    <div class="field">
+      <span class="label">Colour</span>
+      <div class="swatches" id="swatches" role="radiogroup" aria-label="Colour"></div>
+    </div>
+
+    <div class="field">
+      <span class="label">Size (EU) <a href="#faq" class="small-link">Size help</a></span>
+      <div class="sizes" id="sizes" role="radiogroup" aria-label="Size"></div>
+    </div>
+
+    <button class="btn btn-block" id="reserve" type="button">Join waitlist for this style</button>
+    <p class="fine" id="reserveMsg" role="status"></p>
+
+    <ul class="points">
+      <li>Slim strappy design with an ankle strap</li>
+      <li>Mid-height heel, easy to dance in</li>
+      <li>Four colours: black, ivory, gold and red</li>
+      <li>Waitlist members get first access to every drop</li>
+    </ul>
+  </div>
+</section>
+
+<section class="why" id="why">
+  <h2>Why Easy Girl</h2>
+  <div class="cards">
+    <article><h3>Made for events</h3><p>Weddings, parties, dinners. Shoes that look dressed up and still let you enjoy the night.</p></article>
+    <article><h3>Honest sizing</h3><p>Clear size guide and real measurements, so you order once and get it right.</p></article>
+    <article><h3>Delivery that is clear</h3><p>We show delivery time and any import charges up front. No surprises at the door.</p></article>
+  </div>
+</section>
+
+<section class="wait" id="waitlist">
+  <h2>Be first in line</h2>
+  <p>Leave your details and we will message you before launch with early access and launch pricing.</p>
+  <form id="waitForm" novalidate>
+    <input type="text" name="name" placeholder="First name" autocomplete="given-name" required>
+    <input type="email" name="email" placeholder="Email address" autocomplete="email" required>
+    <input type="tel" name="phone" placeholder="Phone (optional, for SMS)" autocomplete="tel">
+    <select name="country" aria-label="Country">
+      <option value="">Country</option>
+      <option>Germany</option><option>Netherlands</option><option>France</option>
+      <option>Spain</option><option>Italy</option><option>Ireland</option>
+      <option>United Kingdom</option><option>Belgium</option><option>Sweden</option>
+      <option>Other</option>
+    </select>
+    <label class="check"><input type="checkbox" name="consent" required> I agree to receive launch updates from Easy Girl and accept the <a href="#privacy">privacy policy</a>.</label>
+    <input type="hidden" name="style" id="styleField" value="">
+    <button class="btn btn-block" type="submit">Join the waitlist</button>
+    <p class="fine" id="formMsg" role="status"></p>
+  </form>
+</section>
+
+<section class="faq" id="faq">
+  <h2>FAQ</h2>
+  <details><summary>When do you launch?</summary><p>We are collecting waitlist sign-ups now. Members are emailed first when the first drop is ready.</p></details>
+  <details><summary>How much will they cost?</summary><p>Launch pricing is shared with the waitlist first. We will always show the full price, including delivery, before you pay.</p></details>
+  <details><summary>Where do you deliver?</summary><p>We are launching with Europe. Delivery time and any import duty are shown at checkout, before you pay.</p></details>
+  <details><summary>Can I return them?</summary><p>Yes. You will have 14 days from delivery to return unworn shoes in their original packaging. The full returns policy is published before launch.</p></details>
+  <details><summary>How do I pick my size?</summary><p>Sizes are listed in EU sizes. If you are between sizes, go up one. A full size chart is added with launch.</p></details>
+</section>
+
+<section class="policy" id="privacy">
+  <h2>Privacy</h2>
+  <p>We use your details only to send Easy Girl launch updates. We never sell your data, and you can unsubscribe at any time. Contact: <a href="mailto:hello@easygirl.example">hello@easygirl.example</a> (replace with your real address).</p>
+</section>
+
+</main>
+
+<footer class="foot">
+  <p class="logo">Easy Girl</p>
+  <p>&copy; <span id="yr"></span> Easy Girl. All rights reserved.</p>
+</footer>
+
+<!-- Sandal illustration. Original artwork, recoloured by the swatches. -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <symbol id="sandal" viewBox="0 0 400 360">
+      <ellipse cx="200" cy="330" rx="150" ry="10" fill="rgba(0,0,0,.08)"/>
+      <!-- heel -->
+      <path d="M92 214 L104 214 L124 322 L114 322 Z" fill="var(--shoe)"/>
+      <!-- sole / footbed -->
+      <path d="M96 208 C150 232 250 216 322 150 C334 138 352 148 342 162 C292 236 168 262 98 232 Z" fill="var(--inner)"/>
+      <path d="M96 208 C150 224 250 208 320 146 C334 136 350 146 342 160 C292 226 168 248 98 224 Z" fill="var(--shoe)"/>
+      <!-- toe strap -->
+      <path d="M262 168 C284 150 312 136 332 138 C338 146 334 154 326 158 C306 160 286 172 270 186 Z" fill="var(--strap)"/>
+      <!-- cross straps -->
+      <path d="M170 196 C200 178 232 160 262 150" stroke="var(--strap)" stroke-width="9" fill="none" stroke-linecap="round"/>
+      <path d="M176 214 C206 200 238 184 270 168" stroke="var(--strap)" stroke-width="9" fill="none" stroke-linecap="round"/>
+      <!-- ankle straps -->
+      <path d="M104 206 C96 168 100 120 118 78" stroke="var(--strap)" stroke-width="9" fill="none" stroke-linecap="round"/>
+      <path d="M118 78 C150 70 190 96 238 138" stroke="var(--strap)" stroke-width="9" fill="none" stroke-linecap="round"/>
+      <path d="M110 150 C150 150 190 164 226 176" stroke="var(--strap)" stroke-width="9" fill="none" stroke-linecap="round"/>
+      <rect x="96" y="132" width="14" height="14" rx="2" fill="none" stroke="var(--buckle)" stroke-width="3"/>
+    </symbol>
+  </defs>
+</svg>
+
+<script src="app.js"></script>
+</body>
+</html>
