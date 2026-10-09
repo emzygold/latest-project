@@ -1,0 +1,33 @@
+{
+  "name": "Ease Estate: new lead alert",
+  "nodes": [
+    {
+      "parameters": { "httpMethod": "POST", "path": "ease-estate-lead", "responseMode": "onReceived" },
+      "name": "Ease Estate Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [240, 300]
+    },
+    {
+      "parameters": {
+        "authentication": "predefinedCredentialType",
+        "method": "POST",
+        "url": "https://api.twilio.com/2010-04-01/Accounts/YOUR_ACCOUNT_SID/Messages.json",
+        "sendBody": true,
+        "contentType": "form-urlencoded",
+        "bodyParameters": { "parameters": [
+          { "name": "From", "value": "whatsapp:+14155238886" },
+          { "name": "To", "value": "whatsapp:+234YOUR_AGENT_NUMBER" },
+          { "name": "Body", "value": "={{ $json.body.message }}" }
+        ] }
+      },
+      "name": "WhatsApp the agent (Twilio)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [480, 300]
+    }
+  ],
+  "connections": {
+    "Ease Estate Webhook": { "main": [[{ "node": "WhatsApp the agent (Twilio)", "type": "main", "index": 0 }]] }
+  }
+}
