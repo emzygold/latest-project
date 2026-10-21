@@ -22,10 +22,18 @@ def duration(path: str) -> float:
     return float(out.stdout.strip())
 
 
-CAPTION_STYLE = (
-    "FontName=Arial,FontSize=14,Bold=1,PrimaryColour=&H00FFFFFF&,"
-    "OutlineColour=&H00000000&,BorderStyle=1,Outline=3,Shadow=0,Alignment=2,MarginV=80"
-)
+def dimensions(path: str) -> tuple:
+    out = subprocess.run(
+        ["ffprobe", "-v", "error", "-select_streams", "v:0", "-show_entries", "stream=width,height",
+         "-of", "csv=p=0", path], capture_output=True, text=True)
+    if out.returncode != 0 or "," not in out.stdout:
+        raise SystemExit(f"Could not read video size: {path}")
+    w, h = out.stdout.strip().split(",")[:2]
+    return int(w), int(h)
+
+
+def output_size(src_w: int, src_h: int, vertical: bool) -> tuple:
+    return (1080, 1920) if vertical else (src_w, src_h)
 
 
 def cut(
@@ -34,19 +42,23 @@ def cut(
     start: float,
     end: float,
     vertical: bool = False,
-    srt: Optional[str] = None,
+    subs: Optional[str] = None,
+    center_x: float = 0.5,
     crf: int = 20,
 ) -> None:
-    """Cut [start, end] from src into dst, optionally 9:16 and captioned."""
+    """Cut [start, end] from src into dst, optionally 9:16 (centred on center_x) with ASS captions."""
     filters = []
     if vertical:
-        filters.append("crop='min(iw,ih*9/16)':ih,scale=1080:1920,setsar=1")
+        w, h = dimensions(src)
+        crop_w = min(w, int(h * 9 / 16) // 2 * 2)
+        x = max(0, min(int(center_x * w - crop_w / 2), w - crop_w))
+        filters.append(f"crop={crop_w}:{h}:{x}:0,scale=1080:1920,setsar=1")
     workdir = None
-    if srt:
-        # Run ffmpeg inside a temp dir so the subtitles path needs no escaping.
+    if subs:
+        # Run ffmpeg inside a temp dir so the subtitle path needs no escaping.
         workdir = tempfile.mkdtemp(prefix="clipper_")
-        shutil.copy(srt, os.path.join(workdir, "subs.srt"))
-        filters.append(f"subtitles=subs.srt:force_style='{CAPTION_STYLE}'")
+        shutil.copy(subs, os.path.join(workdir, "subs.ass"))
+        filters.append("ass=subs.ass")
     cmd = ["ffmpeg", "-y", "-hide_banner", "-loglevel", "error",
            "-ss", f"{start:.3f}", "-to", f"{end:.3f}", "-i", os.path.abspath(src)]
     if filters:

@@ -5,7 +5,7 @@ import subprocess
 import pytest
 
 from clipper import video
-from clipper.captions import Segment, segments_in_range, to_srt, wrap_text
+from clipper.captions import Segment, Style, Word, load_style, segments_in_range, to_ass, to_srt, wrap_text
 from clipper.cli import main
 from clipper.highlights import find_highlights
 from clipper.timeparse import format_srt_time, parse_range, parse_time
@@ -81,11 +81,71 @@ def test_cut_ranges_vertical(sample, tmp_path):
 
 @needs_ffmpeg
 def test_cut_with_burned_captions(sample, tmp_path):
-    srt = tmp_path / "c.srt"
-    srt.write_text(to_srt([Segment(0, 1.5, "hello captions")]))
+    ass = tmp_path / "c.ass"
+    ass.write_text(to_ass([Segment(0, 1.5, "hello animated captions")], Style()))
     dst = tmp_path / "cap.mp4"
-    video.cut(sample, str(dst), 0, 2, vertical=True, srt=str(srt))
+    video.cut(sample, str(dst), 0, 2, vertical=True, subs=str(ass))
     assert abs(video.duration(str(dst)) - 2) < 0.3
+
+
+def test_ass_highlights_active_word_and_uppercases():
+    seg = Segment(0, 3, "one two three", [Word(0, 1, "one"), Word(1, 2, "two"), Word(2, 3, "three")])
+    out = to_ass([seg], Style(highlight="#FF0000", words_per_line=3))
+    events = [l for l in out.splitlines() if l.startswith("Dialogue")]
+    assert len(events) == 3
+    assert "{\\c&H000000FF&}ONE{\\c&H00FFFFFF&} TWO THREE" in events[0]
+    assert "PlayResX: 1080" in out and "PlayResY: 1920" in out
+
+
+def test_ass_without_word_timing_spreads_words():
+    out = to_ass([Segment(0, 4, "aaaa bbbb")], Style(uppercase=False, words_per_line=1))
+    events = [l for l in out.splitlines() if l.startswith("Dialogue")]
+    assert events[0].startswith("Dialogue: 0,0:00:00.00,0:00:02.00")
+    assert events[1].startswith("Dialogue: 0,0:00:02.00,0:00:04.00")
+
+
+def test_segments_in_range_clips_words():
+    seg = Segment(8, 14, "a b c", [Word(8, 10, "a"), Word(10, 12, "b"), Word(12, 14, "c")])
+    (out,) = segments_in_range([seg], 10, 13)
+    assert [(w.text, w.start, w.end) for w in out.words] == [("b", 0, 2), ("c", 2, 3)]
+
+
+def test_styles(tmp_path):
+    assert load_style("karaoke").words_per_line == 2
+    f = tmp_path / "s.json"
+    f.write_text('{"font": "Impact", "size": 100}')
+    st = load_style("pop", str(f), highlight="#00FF00", color=None)
+    assert (st.font, st.size, st.highlight, st.color) == ("Impact", 100, "#00FF00", "#FFFFFF")
+    with pytest.raises(ValueError):
+        load_style("nope")
+    f.write_text('{"fnot": 1}')
+    with pytest.raises(ValueError):
+        load_style("pop", str(f))
+
+
+def test_highlights_support_two_minute_clips_and_scores():
+    segs = [Segment(i * 10, i * 10 + 10, "Why is this the biggest mistake? Stop it now!") for i in range(30)]
+    (start, end, score), = find_highlights(segs, count=1, min_len=100, max_len=120)
+    assert 100 <= end - start <= 120
+    assert 0 < score <= 100
+    # no cap: a 3 minute window is allowed when asked for
+    (s2, e2, _), = find_highlights(segs, count=1, min_len=170, max_len=200)
+    assert e2 - s2 >= 170
+
+
+@needs_ffmpeg
+def test_auto_end_to_end_with_report(sample, tmp_path, monkeypatch):
+    import json
+    import clipper.transcribe as t
+    words = [Word(i * 0.5, i * 0.5 + 0.5, f"word{i}") for i in range(20)]
+    segs = [Segment(0, 5, "Why is this a mistake?", words[:10]), Segment(5, 10, "Stop doing it now!", words[10:])]
+    monkeypatch.setattr(t, "transcribe", lambda *a, **k: segs)
+    out = tmp_path / "o"
+    main(["auto", sample, "-n", "1", "--min-length", "5", "--max-length", "10", "--vertical", "--reframe", "face",
+          "--caption-style", "karaoke", "-o", str(out)])
+    report = json.loads((out / "sample_report.json").read_text())
+    assert report[0]["duration"] == 10 and report[0]["hook"].startswith("Why")
+    assert os.path.exists(report[0]["file"])
 
 
 @needs_ffmpeg
