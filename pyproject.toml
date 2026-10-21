@@ -1,0 +1,21 @@
+[project]
+name = "clipper"
+version = "0.1.0"
+description = "Cut long videos into short, vertical, captioned clips."
+requires-python = ">=3.9"
+dependencies = []
+
+[project.optional-dependencies]
+ai = ["faster-whisper>=1.0"]
+download = ["yt-dlp"]
+dev = ["pytest"]
+
+[project.scripts]
+clipper = "clipper.cli:main"
+
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools]
+packages = ["clipper"]
