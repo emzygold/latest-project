@@ -23,7 +23,18 @@ pip install -e ".[ai,face,download]"   # everything
 # or pick: [ai] Whisper captions + auto-highlights, [face] face reframing, [download] URLs
 ```
 
-## Use
+## Web app (localhost)
+
+```bash
+clipper serve
+```
+
+Then open **http://127.0.0.1:8000** in your browser. Drop in a video or paste a YouTube
+link, choose "AI picks the best moments" or your own times, set the caption look, and
+click **Make clips**. Clips appear on the page with their virality score and a download
+button. Files are kept in `./clipper_web`. Use `clipper serve --port 8001` if port 8000 is busy.
+
+## Command line
 
 ```bash
 # find the best moments automatically (5 clips, 30-120s, captioned, vertical)

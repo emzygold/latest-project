@@ -13,18 +13,18 @@ from .highlights import find_highlights
 from .timeparse import parse_range
 
 
-def _resolve_source(source: str, outdir: str) -> str:
+def _resolve_source(source: str, outdir: str, log=print) -> str:
     if source.startswith(("http://", "https://")):
-        print(f"Downloading {source} ...")
+        log(f"Downloading {source} ...")
         return video.download(source, outdir)
     if not os.path.isfile(source):
         raise SystemExit(f"File not found: {source}")
     return source
 
 
-def _transcript(src, args) -> List[Segment]:
+def _transcript(src, args, log=print) -> List[Segment]:
     from .transcribe import transcribe
-    print("Transcribing (first run downloads the Whisper model) ...")
+    log("Transcribing (first run downloads the Whisper model) ...")
     return transcribe(src, model_size=args.model, language=args.language)
 
 
@@ -58,7 +58,7 @@ def _render(src, outdir, base, index, start, end, args, segments: Optional[List[
     return dst, (clip_segs[0].text if clip_segs else "")
 
 
-def cmd_cut(args) -> None:
+def cmd_cut(args, log=print) -> list:
     video.require_ffmpeg()
     os.makedirs(args.output, exist_ok=True)
     try:
@@ -66,43 +66,47 @@ def cmd_cut(args) -> None:
     except ValueError as e:
         raise SystemExit(str(e))
     style = _style(args)
-    src = _resolve_source(args.source, args.output)
+    src = _resolve_source(args.source, args.output, log)
     total = video.duration(src)
     for s, _e in ranges:
         if s >= total:
             raise SystemExit(f"Start {s}s is past the end of the video ({total:.1f}s).")
-    segments = _transcript(src, args) if args.captions else None
+    segments = _transcript(src, args, log) if args.captions else None
     base = os.path.splitext(os.path.basename(src))[0]
-    print(f"Cutting {len(ranges)} clip(s):")
+    log(f"Cutting {len(ranges)} clip(s):")
+    clips = []
     for i, (s, e) in enumerate(ranges, 1):
         e = min(e, total)
-        dst, _hook = _render(src, args.output, base, i, s, e, args, segments, style)
-        print(f"  [{i}] {s:7.1f}s -> {e:7.1f}s ({e - s:.0f}s)  {dst}")
+        dst, hook = _render(src, args.output, base, i, s, e, args, segments, style)
+        log(f"  [{i}] {s:7.1f}s -> {e:7.1f}s ({e - s:.0f}s)  {dst}")
+        clips.append({"file": dst, "start": s, "end": e, "duration": round(e - s, 1), "virality": None, "hook": hook})
+    return clips
 
 
-def cmd_auto(args) -> None:
+def cmd_auto(args, log=print) -> list:
     video.require_ffmpeg()
     os.makedirs(args.output, exist_ok=True)
     if args.min_length > args.max_length:
         raise SystemExit("--min-length cannot be bigger than --max-length")
     style = _style(args)
-    src = _resolve_source(args.source, args.output)
-    segments = _transcript(src, args)
+    src = _resolve_source(args.source, args.output, log)
+    segments = _transcript(src, args, log)
     picks = find_highlights(segments, count=args.count, min_len=args.min_length, max_len=args.max_length)
     if not picks:
         raise SystemExit("No suitable highlights found (is there speech, and is the video longer than --min-length?).")
     base = os.path.splitext(os.path.basename(src))[0]
     report = []
-    print(f"Found {len(picks)} highlight(s):")
+    log(f"Found {len(picks)} highlight(s):")
     for i, (s, e, score) in enumerate(picks, 1):
         dst, hook = _render(src, args.output, base, i, s, e, args, None if args.no_captions else segments, style)
         hook = hook or segments_in_range(segments, s, e)[0].text
-        print(f"  [{i}] virality {score:3}  {s:7.1f}s -> {e:7.1f}s ({e - s:.0f}s)  {dst}\n       hook: {hook}")
+        log(f"  [{i}] virality {score:3}  {s:7.1f}s -> {e:7.1f}s ({e - s:.0f}s)  {dst}\n       hook: {hook}")
         report.append({"file": dst, "start": s, "end": e, "duration": round(e - s, 1), "virality": score, "hook": hook})
     path = os.path.join(args.output, f"{base}_report.json")
     with open(path, "w", encoding="utf-8") as f:
         json.dump(report, f, indent=2)
-    print(f"Report: {path}")
+    log(f"Report: {path}")
+    return report
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -139,7 +143,17 @@ def build_parser() -> argparse.ArgumentParser:
     a.add_argument("--max-length", type=float, default=120, help="longest clip in seconds (default: 120; raise it freely)")
     a.add_argument("--no-captions", action="store_true", help="don't burn in captions")
     a.set_defaults(func=cmd_auto)
+    v = sub.add_parser("serve", help="start the local web app (open the link it prints)")
+    v.add_argument("--host", default="127.0.0.1", help="address to listen on (default: 127.0.0.1, this computer only)")
+    v.add_argument("--port", type=int, default=8000, help="port (default: 8000)")
+    v.add_argument("--workdir", default="clipper_web", help="where uploads and clips are stored (default: clipper_web)")
+    v.set_defaults(func=cmd_serve)
     return p
+
+
+def cmd_serve(args) -> None:
+    from .server import serve
+    serve(args.host, args.port, args.workdir)
 
 
 def main(argv=None) -> None:

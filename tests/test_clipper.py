@@ -154,3 +154,50 @@ def test_missing_file_and_bad_start(sample, tmp_path):
         main(["cut", str(tmp_path / "nope.mp4"), "0-5"])
     with pytest.raises(SystemExit):
         main(["cut", sample, "50-60", "-o", str(tmp_path / "o")])
+
+
+@needs_ffmpeg
+def test_web_app_upload_cut_and_download(sample, tmp_path):
+    import json
+    import threading
+    import time
+    import urllib.request
+    from http.server import ThreadingHTTPServer
+    from clipper.server import State, make_handler
+
+    httpd = ThreadingHTTPServer(("127.0.0.1", 0), make_handler(State(str(tmp_path / "web"))))
+    threading.Thread(target=httpd.serve_forever, daemon=True).start()
+    base = f"http://127.0.0.1:{httpd.server_address[1]}"
+    try:
+        assert b"Make clips" in urllib.request.urlopen(base + "/").read()
+        with open(sample, "rb") as f:
+            req = urllib.request.Request(base + "/api/upload?name=../my%20vid.mp4", data=f.read(), method="POST")
+        token = json.loads(urllib.request.urlopen(req).read())["upload"]
+        assert "/" not in token and token.endswith("my vid.mp4")
+
+        body = json.dumps({"mode": "cut", "upload": token, "ranges": "1-3, 4-6", "vertical": True,
+                           "reframe": "center", "captions": False}).encode()
+        req = urllib.request.Request(base + "/api/jobs", data=body, method="POST",
+                                     headers={"Content-Type": "application/json"})
+        job = json.loads(urllib.request.urlopen(req).read())["job"]
+        for _ in range(100):
+            state = json.loads(urllib.request.urlopen(f"{base}/api/jobs/{job}").read())
+            if state["status"] in ("done", "error"):
+                break
+            time.sleep(0.2)
+        assert state["status"] == "done", state["log"]
+        assert len(state["clips"]) == 2
+
+        req = urllib.request.Request(base + state["clips"][0]["url"], headers={"Range": "bytes=0-99"})
+        resp = urllib.request.urlopen(req)
+        assert resp.status == 206 and len(resp.read()) == 100
+
+        bad = urllib.request.Request(base + "/api/jobs", data=b'{"mode":"cut","upload":"' + token.encode() + b'"}',
+                                     method="POST")
+        with pytest.raises(urllib.error.HTTPError) as err:
+            urllib.request.urlopen(bad)
+        assert err.value.code == 400
+        with pytest.raises(urllib.error.HTTPError):
+            urllib.request.urlopen(base + f"/files/{job}/..%2F..%2Fsecret")
+    finally:
+        httpd.shutdown()
