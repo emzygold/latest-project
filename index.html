@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Garage Bandz — Build Your Ride. Own The Streets.</title>
+<meta name="description" content="Garage Bandz: build your ride, run the city, own the streets. PC version is live.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bowlby+One&family=Barlow+Condensed:wght@500;600;700;800&family=Permanent+Marker&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<!-- ============ SVG SYMBOLS ============ -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <!-- Hero car: flat GTA-poster supercar, faces right -->
+    <symbol id="car" viewBox="0 0 640 220">
+      <g stroke="#0a0514" stroke-width="7" stroke-linejoin="round" stroke-linecap="round">
+        <!-- rear wing -->
+        <path d="M18 70 L92 62 L96 80 L24 90 Z" fill="#ff2bd6"/>
+        <path d="M70 84 L84 112 L98 112 L92 84 Z" fill="#1d0a3f"/>
+        <!-- body -->
+        <path d="M24 142 L36 118 L128 104 L214 70 Q300 40 392 66 L488 96 L596 112 Q626 120 626 144 L626 160 L24 160 Z" fill="#5a1bc4"/>
+        <!-- lower shade -->
+        <path d="M24 142 L626 144 L626 160 L24 160 Z" fill="#2a0d6e"/>
+        <!-- stripe -->
+        <path d="M150 112 L520 112 L590 124 L170 128 Z" fill="#ff2bd6"/>
+        <!-- cabin glass -->
+        <path d="M236 78 Q300 56 380 74 L448 98 L214 104 Z" fill="#150833"/>
+        <path d="M290 70 L316 66 L330 98 L292 100 Z" fill="#7d3df0" stroke="none"/>
+        <!-- side vent -->
+        <path d="M400 118 L470 120 L470 138 L412 136 Z" fill="#0a0514"/>
+        <!-- headlight -->
+        <path d="M552 108 L616 116 L612 128 L548 122 Z" fill="#e9fff4"/>
+        <!-- front splitter -->
+        <path d="M520 160 L640 160 L640 172 L540 172 Z" fill="#ff2bd6"/>
+        <!-- wheel arches -->
+        <circle cx="158" cy="160" r="48" fill="#0a0514"/>
+        <circle cx="500" cy="160" r="48" fill="#0a0514"/>
+        <!-- wheels -->
+        <circle cx="158" cy="164" r="40" fill="#14091f"/>
+        <circle cx="500" cy="164" r="40" fill="#14091f"/>
+        <circle cx="158" cy="164" r="22" fill="#ff2bd6"/>
+        <circle cx="500" cy="164" r="22" fill="#ff2bd6"/>
+        <circle cx="158" cy="164" r="7" fill="#0a0514"/>
+        <circle cx="500" cy="164" r="7" fill="#0a0514"/>
+      </g>
+      <!-- highlight -->
+      <path d="M230 80 Q300 56 380 76" fill="none" stroke="#c9a2ff" stroke-width="4" stroke-linecap="round" opacity=".8"/>
+    </symbol>
+
+    <!-- Smaller rival car -->
+    <symbol id="car2" viewBox="0 0 640 220">
+      <g stroke="#0a0514" stroke-width="8" stroke-linejoin="round" stroke-linecap="round">
+        <path d="M20 146 L40 120 L150 108 L240 66 Q320 44 400 70 L500 100 L600 116 Q628 124 628 148 L628 162 L20 162 Z" fill="#2c1a8f"/>
+        <path d="M20 146 L628 148 L628 162 L20 162 Z" fill="#150b4a"/>
+        <path d="M250 76 Q320 56 392 76 L450 100 L228 106 Z" fill="#0b0624"/>
+        <path d="M160 116 L540 116 L596 126 L180 132 Z" fill="#2dff8a"/>
+        <circle cx="160" cy="162" r="44" fill="#0a0514"/>
+        <circle cx="500" cy="162" r="44" fill="#0a0514"/>
+        <circle cx="160" cy="166" r="36" fill="#14091f"/>
+        <circle cx="500" cy="166" r="36" fill="#14091f"/>
+        <circle cx="160" cy="166" r="18" fill="#2dff8a"/>
+        <circle cx="500" cy="166" r="18" fill="#2dff8a"/>
+      </g>
+    </symbol>
+
+    <!-- Palm tree -->
+    <symbol id="palm" viewBox="0 0 200 420">
+      <g stroke="#0a0514" stroke-width="6" stroke-linejoin="round" stroke-linecap="round">
+        <path d="M92 420 Q96 300 112 170 L126 172 Q112 304 118 420 Z" fill="#1a0b3d"/>
+        <path d="M118 172 Q60 120 6 150 Q60 120 112 150 Q70 70 20 70 Q80 66 118 130 Q110 40 90 14 Q130 40 128 130 Q150 56 196 40 Q150 76 132 138 Q170 108 198 124 Q160 128 136 160 Z" fill="#1a0b3d"/>
+      </g>
+    </symbol>
+
+    <!-- Star -->
+    <symbol id="star" viewBox="0 0 24 24">
+      <path d="M12 1.5l3.2 7 7.6.8-5.7 5.1 1.7 7.5L12 17.9 5.2 21.9l1.7-7.5L1.2 9.3l7.6-.8z" stroke-linejoin="round"/>
+    </symbol>
+  </defs>
+</svg>
+
+<!-- ============ HEADER ============ -->
+<header class="nav" id="top">
+  <a class="logo" href="#home" aria-label="Garage Bandz home">
+    <span class="logo-g">GARAGE</span><span class="logo-b">BANDZ</span>
+  </a>
+  <button class="burger" aria-label="Menu" aria-expanded="false"><span></span><span></span><span></span></button>
+  <nav class="menu" aria-label="Main">
+    <a href="#home" class="active">Home</a>
+    <a href="#garage">Garage</a>
+    <a href="#races">Races</a>
+    <a href="#leaderboard">Leaderboard</a>
+    <a href="#events">Events</a>
+  </nav>
+  <a class="tag-live" href="#play"><i></i>PC version is live</a>
+</header>
+
+<main>
+<!-- ============ HERO ============ -->
+<section class="hero" id="home">
+  <div class="sky"></div>
+  <div class="sun"><span></span></div>
+  <div class="halftone"></div>
+  <div class="skyline far" data-skyline="far"></div>
+  <div class="skyline near" data-skyline="near"></div>
+  <svg class="palm palm-l"><use href="#palm"/></svg>
+  <svg class="palm palm-r"><use href="#palm"/></svg>
+  <div class="road"><div class="lane"></div></div>
+  <svg class="car car-rival"><use href="#car2"/></svg>
+  <svg class="car car-hero"><use href="#car"/></svg>
+  <div class="speed"><i></i><i></i><i></i><i></i></div>
+
+  <!-- HUD -->
+  <aside class="hud" aria-hidden="true">
+    <div class="minimap"><div class="mm-road"></div><div class="mm-dot"></div><div class="mm-dot d2"></div><span>N</span></div>
+    <div class="hud-stats">
+      <div class="cash">$<b id="cash">00,250,000</b></div>
+      <div class="stars">
+        <svg><use href="#star"/></svg><svg><use href="#star"/></svg><svg><use href="#star"/></svg><svg class="off"><use href="#star"/></svg><svg class="off"><use href="#star"/></svg>
+      </div>
+    </div>
+  </aside>
+
+  <div class="hero-copy">
+    <p class="kicker">Now loading · Los Santos Nights</p>
+    <h1><span>Garage</span><span>Bandz</span></h1>
+    <p class="tagline">Build your ride. Own the streets.</p>
+    <div class="cta" id="play">
+      <a class="btn btn-hot" href="#garage">Play Demo</a>
+      <button class="btn btn-ghost" id="notify-open">Mobile: Notify Me</button>
+    </div>
+  </div>
+
+  <div class="avail">
+    <span class="avail-label">Available on</span>
+    <ul>
+      <li class="on"><svg viewBox="0 0 24 24"><path d="M2 4.5l9-1.3v8.3H2zM12 3l10-1.5v10H12zM2 12.5h9v8.3l-9-1.3zM12 12.5h10v10L12 21z"/></svg>PC</li>
+      <li class="on"><svg viewBox="0 0 24 24"><path d="M4 5h16v10H4zM2 17h20v2H2z"/></svg>Mac</li>
+      <li><svg viewBox="0 0 24 24"><path d="M16.4 12.7c0-2.3 1.9-3.4 2-3.5-1.1-1.6-2.8-1.8-3.4-1.8-1.4-.1-2.8.9-3.5.9s-1.800-.9-3-.8c-1.5 0-3 .9-3.800 2.300-1.600 2.800-.4 7 1.200 9.300.8 1.100 1.700 2.400 2.900 2.300 1.200 0 1.600-.7 3-.7s1.800.7 3 .7 2-1.100 2.800-2.200c.9-1.300 1.200-2.500 1.300-2.600-.1 0-2.500-1-2.500-3.900zM14.200 5.800c.6-.8 1.100-1.800.9-2.900-.9 0-2 .6-2.700 1.400-.6.700-1.100 1.800-.9 2.800 1 .1 2-.5 2.700-1.300z"/></svg>iOS</li>
+      <li><svg viewBox="0 0 24 24"><path d="M6 9h12v9a1.500 1.500 0 01-1.500 1.500h-1V22h-2v-2.500h-3V22h-2v-2.500h-1A1.500 1.500 0 016 18zM4 9.500v6h1.500v-6zM18.500 9.500v6H20v-6zM7 8a5 5 0 0110 0zM9.500 4.500l-1-1.500M14.500 4.500l1-1.500"/></svg>Android</li>
+      <li><svg viewBox="0 0 24 24"><rect x="6" y="2" width="12" height="20" rx="2.500"/></svg>Tablet</li>
+    </ul>
+  </div>
+</section>
+
+<div class="ticker" aria-hidden="true">
+  <div class="ticker-track">
+    <span>★ New season live</span><span>★ Midnight Circuit open</span><span>★ Double cash weekend</span><span>★ 1,204 crews online</span><span>★ New season live</span><span>★ Midnight Circuit open</span><span>★ Double cash weekend</span><span>★ 1,204 crews online</span>
+  </div>
+</div>
+
+<!-- ============ GARAGE ============ -->
+<section class="section" id="garage">
+  <header class="sec-head">
+    <p class="chip">Section 01</p>
+    <h2>The Garage</h2>
+    <p>Strip it. Tune it. Paint it. Every ride is yours to build.</p>
+  </header>
+  <div class="cards">
+    <article class="vcard">
+      <div class="vcard-img"><svg><use href="#car"/></svg><em>Street</em></div>
+      <h3>Night Viper</h3>
+      <dl>
+        <div><dt>Speed</dt><dd><i style="--v:82%"></i></dd></div>
+        <div><dt>Grip</dt><dd><i style="--v:68%"></i></dd></div>
+        <div><dt>Nitro</dt><dd><i style="--v:90%"></i></dd></div>
+      </dl>
+      <p class="price">$ 185,000</p>
+    </article>
+    <article class="vcard alt">
+      <div class="vcard-img"><svg><use href="#car2"/></svg><em>Drift</em></div>
+      <h3>Toxic Drifter</h3>
+      <dl>
+        <div><dt>Speed</dt><dd><i style="--v:70%"></i></dd></div>
+        <div><dt>Grip</dt><dd><i style="--v:92%"></i></dd></div>
+        <div><dt>Nitro</dt><dd><i style="--v:60%"></i></dd></div>
+      </dl>
+      <p class="price">$ 142,500</p>
+    </article>
+    <article class="vcard">
+      <div class="vcard-img"><svg><use href="#car"/></svg><em>Elite</em></div>
+      <h3>Magenta GT</h3>
+      <dl>
+        <div><dt>Speed</dt><dd><i style="--v:96%"></i></dd></div>
+        <div><dt>Grip</dt><dd><i style="--v:74%"></i></dd></div>
+        <div><dt>Nitro</dt><dd><i style="--v:84%"></i></dd></div>
+      </dl>
+      <p class="price">$ 320,000</p>
+    </article>
+  </div>
+</section>
+
+<!-- ============ RACES ============ -->
+<section class="section dark" id="races">
+  <header class="sec-head">
+    <p class="chip">Section 02</p>
+    <h2>Races</h2>
+    <p>Pick a job. Beat the clock. Don’t get caught.</p>
+  </header>
+  <ol class="missions">
+    <li><b>01</b><div><h3>Midnight Circuit</h3><p>Three laps through downtown. Cops on the second lap.</p></div><span class="reward">$ 25,000</span><span class="stars-sm">★★☆</span></li>
+    <li><b>02</b><div><h3>Bridge Run</h3><p>Cross the overpass before the roadblock closes.</p></div><span class="reward">$ 40,000</span><span class="stars-sm">★★★</span></li>
+    <li><b>03</b><div><h3>Harbor Drift</h3><p>Chain the corners at the docks. Score or go home.</p></div><span class="reward">$ 18,500</span><span class="stars-sm">★☆☆</span></li>
+    <li><b>04</b><div><h3>Skyline Sprint</h3><p>Flat out down the strip. Pure speed, no brakes.</p></div><span class="reward">$ 60,000</span><span class="stars-sm">★★★</span></li>
+  </ol>
+</section>
+
+<!-- ============ LEADERBOARD ============ -->
+<section class="section" id="leaderboard">
+  <header class="sec-head">
+    <p class="chip">Section 03</p>
+    <h2>Leaderboard</h2>
+    <p>Top crews this season. Think you can crack the list?</p>
+  </header>
+  <table class="board">
+    <thead><tr><th>#</th><th>Crew</th><th>Wins</th><th>Cash</th></tr></thead>
+    <tbody>
+      <tr class="first"><td>1</td><td>NEON_VIPER</td><td>312</td><td>$4,820,000</td></tr>
+      <tr><td>2</td><td>DriftKingz</td><td>287</td><td>$4,115,500</td></tr>
+      <tr><td>3</td><td>BandzOnly</td><td>254</td><td>$3,740,250</td></tr>
+      <tr><td>4</td><td>Los_Santos_Ghost</td><td>231</td><td>$3,302,000</td></tr>
+      <tr><td>5</td><td>MagentaMob</td><td>219</td><td>$2,988,750</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- ============ EVENTS ============ -->
+<section class="section dark" id="events">
+  <header class="sec-head">
+    <p class="chip">Section 04</p>
+    <h2>Events</h2>
+    <p>Limited-time heat. Show up or miss out.</p>
+  </header>
+  <div class="events">
+    <article class="poster"><span class="stamp">Live</span><h3>Double Cash Weekend</h3><p>Every race pays 2×. Friday 6PM to Sunday midnight.</p></article>
+    <article class="poster p2"><span class="stamp">Soon</span><h3>Crew Wars</h3><p>Four-crew battle for the city. Winner takes the district.</p></article>
+    <article class="poster p3"><span class="stamp">Weekly</span><h3>Drift Night</h3><p>Harbor lot, neon lights, top score wins a custom paint.</p></article>
+  </div>
+</section>
+</main>
+
+<footer class="foot">
+  <div class="logo"><span class="logo-g">GARAGE</span><span class="logo-b">BANDZ</span></div>
+  <p>Build your ride. Own the streets.</p>
+  <p class="small">© 2026 Garage Bandz</p>
+</footer>
+
+<!-- ============ NOTIFY MODAL ============ -->
+<div class="modal" id="modal" hidden>
+  <div class="modal-box" role="dialog" aria-modal="true" aria-labelledby="mtitle">
+    <button class="x" id="notify-close" aria-label="Close">×</button>
+    <h3 id="mtitle">Mobile Drop</h3>
+    <p>Leave your email. We’ll ping you the second iOS &amp; Android go live.</p>
+    <form id="notify-form">
+      <input type="email" required placeholder="you@email.com" aria-label="Email">
+      <button class="btn btn-hot" type="submit">Notify Me</button>
+    </form>
+    <div class="passed" hidden><b>Mission</b> passed<small>You’re on the list.</small></div>
+  </div>
+</div>
+
+<script src="main.js"></script>
+</body>
+</html>
